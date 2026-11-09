@@ -136,7 +136,9 @@ textarea#dump{width:100%;min-height:150px;resize:vertical;padding:12px;border:1p
 .q-now{border-top:4px solid var(--warn)}.q-plan{border-top:4px solid var(--leaf)}.q-fast{border-top:4px solid var(--c-hoc)}.q-drop{border-top:4px solid var(--line)}
 
 .kan{display:grid;gap:12px;grid-template-columns:1fr}
-@media (min-width:720px){.kan{grid-template-columns:repeat(4,1fr)}}
+@media (min-width:600px){.kan{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:1040px){.kan{grid-template-columns:repeat(4,1fr)}}
+.card .acts{flex-wrap:wrap;align-items:center}
 .card{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:6px;margin-top:8px}
 .card p{overflow-wrap:anywhere}
 .card .acts{display:flex;gap:6px;justify-content:space-between}
@@ -182,10 +184,9 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   .site .tools{order:2}
   body{padding-bottom:40px}
 }
-@media (min-width:1180px){
-  .site-in{flex-wrap:nowrap}
-  .site .tabs{order:0;flex:1 1 auto;margin:0 0 0 12px}
-}
+.brand{flex:none}
+.brand b,.brand small{white-space:nowrap}
+.site .tools{flex:none}
 
 /* ---- Nhóm màu theo từng mục ---- */
 #v-gom,.tabs [data-t=gom]{--sec:var(--s-gom)}
