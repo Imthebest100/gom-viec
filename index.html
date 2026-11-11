@@ -205,7 +205,11 @@ body{transition:--oc 1s;--oc:#2B6A4E}
 .tile:hover{transform:none;translate:0 -5px}
 .hero3d{position:relative;overflow:hidden;border-radius:28px;min-height:clamp(240px,36vh,330px);display:flex;align-items:flex-end;color:#fff;isolation:isolate;transform:perspective(1100px) rotateX(calc(var(--sp,0)*7deg)) scale(calc(1 - var(--sp,0)*.05));transform-origin:50% 0;box-shadow:0 28px 60px -30px rgba(8,22,14,.65);will-change:transform}
 .hero3d .h-bg{position:absolute;inset:-8%;z-index:-2;translate:calc(var(--px,0)*-16px) calc(var(--py,0)*-10px + var(--sp,0)*50px);scale:1.06}
-.hero3d .h-bg svg,.hero3d .h-bg img{width:100%;height:100%;display:block;object-fit:cover}
+.hero3d .h-bg svg,.hero3d .h-bg img{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover}
+.hero3d .h-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,color-mix(in srgb,var(--sec,#2B6A4E) 30%,transparent),transparent 62%);mix-blend-mode:soft-light}
+.fc-front img.photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.fc-front::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,transparent 42%,rgba(0,0,0,.5));pointer-events:none}
+.fc-front .fc-glass,.fc-front .fc-hint{z-index:2}
 .hero3d .h-shade{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(0,0,0,.04) 20%,rgba(0,0,0,.58))}
 .h-fg{padding:28px 28px 26px;max-width:680px;translate:calc(var(--px,0)*8px) calc(var(--sp,0)*-26px)}
 .eyebrow{display:inline-block;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;opacity:.9;padding:5px 10px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
@@ -446,7 +450,7 @@ học bài Agent Boss tối 2 tiếng"></textarea>
     <section id="v-arc" class="view stack"></section>
   </main>
 </div>
-<footer class="foot"><span><b>Gom Việc</b> · Sổ tay gom việc, xếp lịch và thử kế hoạch học cho người bận rộn</span><span>Việc ghi ở đây được lưu ngay trong trình duyệt đang dùng, không gửi đi đâu.</span></footer>
+<footer class="foot"><span><b>Gom Việc</b> · Sổ tay gom việc, xếp lịch và thử kế hoạch học cho người bận rộn · Ảnh minh họa từ <a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a></span><span>Việc ghi ở đây được lưu ngay trong trình duyệt đang dùng, không gửi đi đâu.</span></footer>
 
 <button class="fab" data-a="newtask">+ Thêm việc</button>
 <div id="modal"></div>
@@ -1365,6 +1369,10 @@ function sceneSvg(k,W,H){
   return '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'+g+b+'</svg>';
 }
 
+var PHOTO={'hom-nay':'img/hom-nay.jpg',gom:'img/gom.jpg',tuan:'img/tuan.jpg','uu-tien':'img/uu-tien.jpg',content:'img/content.jpg',hoc:'img/hoc.jpg',arc:'img/arc.jpg'};
+var PHOTOPOS={'hom-nay':'50% 80%',gom:'50% 55%',tuan:'50% 28%','uu-tien':'50% 22%',content:'72% 72%',hoc:'55% 60%',arc:'50% 62%'};
+/* Ảnh thật nằm trên tranh vẽ; nếu ảnh không tải được thì tranh vẽ vẫn hiện */
+function artHtml(k,W,H){return sceneSvg(k,W,H)+(PHOTO[k]?'<img class="photo" src="'+PHOTO[k]+'" alt="" loading="lazy" decoding="async" style="object-position:'+(PHOTOPOS[k]||'50% 50%')+'" onerror="this.remove()">':'')}
 V.home={cur:0,target:0,off:0,mode:'flow',flip:false};
 var hpos=function(){return V.home.cur+V.home.off};
 var greet=function(){var h=new Date().getHours();return h<11?'Chào buổi sáng':h<13?'Chào buổi trưa':h<18?'Chào buổi chiều':'Chào buổi tối'};
@@ -1401,7 +1409,7 @@ function homeStats(k){
 function cardHtml(c,i){
   var st=homeStats(c.k).map(function(r){return '<div class="fs"><span>'+r[0]+'</span><b>'+r[1]+'</b></div>'}).join('');
   return '<div class="fc" data-i="'+i+'"><div class="fc-tilt"><div class="fc-in">'+
-    '<div class="fc-face fc-front">'+sceneSvg(c.k)+'<span class="fc-hint">Bấm để lật</span><div class="fc-glass"><span class="fc-no">'+(i+1)+' / '+HOME.length+'</span><h3>'+c.t+'</h3><p>'+c.d+'</p></div></div>'+
+    '<div class="fc-face fc-front">'+artHtml(c.k)+'<span class="fc-hint">Bấm để lật</span><div class="fc-glass"><span class="fc-no">'+(i+1)+' / '+HOME.length+'</span><h3>'+c.t+'</h3><p>'+c.d+'</p></div></div>'+
     '<div class="fc-face fc-back"><span class="fc-no">'+c.t+'</span><div class="fs-list">'+st+'</div><button class="open" data-a="tab" data-t="'+c.k+'">Mở '+c.t+'</button><button class="fc-flip" data-a="hflip">Lật lại</button></div>'+
     '</div></div></div>';
 }
@@ -1588,7 +1596,7 @@ var HERO={
 };
 function hero(k){
   var H=HERO[k],chips=homeStats(k).slice(0,2).map(function(r){return '<div class="h-chip"><b>'+r[1]+'</b><span>'+r[0]+'</span></div>'}).join('');
-  return '<div class="hero3d" data-k="'+k+'"><div class="h-bg">'+sceneSvg(k,900,330)+'</div><div class="h-shade"></div><div class="h-chips">'+chips+'</div><div class="h-fg"><span class="eyebrow">'+EYE[k]+'</span><h2>'+H[0]+'</h2><p>'+H[1]+'</p></div></div>';
+  return '<div class="hero3d" data-k="'+k+'"><div class="h-bg">'+artHtml(k,900,330)+'</div><div class="h-shade"></div><div class="h-chips">'+chips+'</div><div class="h-fg"><span class="eyebrow">'+EYE[k]+'</span><h2>'+H[0]+'</h2><p>'+H[1]+'</p></div></div>';
 }
 document.querySelectorAll('.tabs button').forEach(function(b){b.insertAdjacentHTML('afterbegin',svg(b.dataset.t))});
 
