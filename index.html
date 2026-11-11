@@ -21,16 +21,16 @@
   --c-content:#B0345F; --c-khach:#1B7385; --c-hoc:#3A68AE; --c-nha:#8A6420; --c-khac:#5B6A62;
   --font-body:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --font-display:"Fraunces",Georgia,"Times New Roman",serif;
-  --s-gom:#B0345F; --s-today:#2B6A4E; --s-week:#2F6FB0; --s-pri:#B8650B; --s-content:#7A4BB5; --s-hoc:#0E7C7B; --on-sec:#FFFFFF; --bad:#C0392B;
+  --s-gom:#B0345F; --s-today:#2B6A4E; --s-week:#2F6FB0; --s-pri:#B8650B; --s-content:#7A4BB5; --s-hoc:#0E7C7B; --s-arc:#C2410C; --on-sec:#FFFFFF; --bad:#C0392B;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#111915; --surface:#19231E; --surface2:#222F28; --ink:#E5EEE8; --muted:#9BABA2; --line:#2C3A33;
   --accent:#E67BA2; --on-accent:#2A0A17; --leaf:#6CC49B; --warn:#EBA650; --warn-bg:#3A2A12;
-  --c-content:#E67BA2; --c-khach:#5CC1D3; --c-hoc:#8CB1EA; --c-nha:#D6B26C; --c-khac:#9BABA2; --s-gom:#E67BA2; --s-today:#6CC49B; --s-week:#7DB2F0; --s-pri:#EBA650; --s-content:#C79BF0; --s-hoc:#4FD1C5; --on-sec:#10201A; --bad:#FF8A80; color-scheme:dark}}
+  --c-content:#E67BA2; --c-khach:#5CC1D3; --c-hoc:#8CB1EA; --c-nha:#D6B26C; --c-khac:#9BABA2; --s-gom:#E67BA2; --s-today:#6CC49B; --s-week:#7DB2F0; --s-pri:#EBA650; --s-content:#C79BF0; --s-hoc:#4FD1C5; --s-arc:#FF9966; --on-sec:#10201A; --bad:#FF8A80; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#111915; --surface:#19231E; --surface2:#222F28; --ink:#E5EEE8; --muted:#9BABA2; --line:#2C3A33;
   --accent:#E67BA2; --on-accent:#2A0A17; --leaf:#6CC49B; --warn:#EBA650; --warn-bg:#3A2A12;
-  --c-content:#E67BA2; --c-khach:#5CC1D3; --c-hoc:#8CB1EA; --c-nha:#D6B26C; --c-khac:#9BABA2; --s-gom:#E67BA2; --s-today:#6CC49B; --s-week:#7DB2F0; --s-pri:#EBA650; --s-content:#C79BF0; --s-hoc:#4FD1C5; --on-sec:#10201A; --bad:#FF8A80; color-scheme:dark}
+  --c-content:#E67BA2; --c-khach:#5CC1D3; --c-hoc:#8CB1EA; --c-nha:#D6B26C; --c-khac:#9BABA2; --s-gom:#E67BA2; --s-today:#6CC49B; --s-week:#7DB2F0; --s-pri:#EBA650; --s-content:#C79BF0; --s-hoc:#4FD1C5; --s-arc:#FF9966; --on-sec:#10201A; --bad:#FF8A80; color-scheme:dark}
 
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--font-body);
@@ -188,6 +188,39 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .brand b,.brand small{white-space:nowrap}
 .site .tools{flex:none}
 
+/* ---- Lock in ---- */
+#v-arc,.tabs [data-t=arc]{--sec:var(--s-arc)}
+.k-arc{--bc:var(--s-arc)}
+.blk.rest{opacity:.8}
+.arc-count{background:color-mix(in srgb,var(--s-arc) 9%,var(--surface))}
+.arc-num{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.arc-num b{font-family:var(--font-display);font-size:64px;line-height:1;color:var(--s-arc);font-variant-numeric:tabular-nums}
+.arc-num span{font-size:15px;color:var(--ink)}
+.vow{margin:6px 0 10px;padding:0;font-family:var(--font-display);font-size:22px;line-height:1.35;font-weight:500;text-wrap:balance}
+.strip{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:1px solid color-mix(in srgb,var(--s-arc) 35%,transparent);background:color-mix(in srgb,var(--s-arc) 10%,var(--surface));border-radius:12px;padding:9px 14px;margin-bottom:16px;min-height:44px}
+.strip b{color:var(--s-arc);white-space:nowrap;font-size:13px}
+.strip .svow{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13px;color:var(--muted)}
+@media (max-width:520px){.strip .svow{display:none}.strip{justify-content:space-between}}
+.hmap{display:grid;grid-template-rows:repeat(7,18px);grid-auto-flow:column;grid-auto-columns:18px;gap:4px;width:max-content;padding:2px}
+.hm{width:18px;height:18px;border-radius:5px;border:0;padding:0;background:var(--surface2)}
+.hm.s1{background:color-mix(in srgb,var(--s-arc) 40%,var(--surface2))}
+.hm.s2{background:var(--s-arc)}
+.hm.fut{background:transparent;border:1px dashed var(--line)}
+.hm.off{background:transparent}
+.hm.today{box-shadow:0 0 0 2px var(--ink)}
+.hm.sel{outline:2px solid var(--accent);outline-offset:1px}
+.hmk::before{content:"";display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:6px;vertical-align:-2px;background:var(--surface2)}
+.hmk.s1::before{background:color-mix(in srgb,var(--s-arc) 40%,var(--surface2))}
+.hmk.s2::before{background:var(--s-arc)}
+.modes{display:grid;gap:8px}
+.mode{display:flex;flex-direction:column;gap:2px;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px}
+.mode span{font-size:13px;color:var(--muted)}
+.mode.on{border-color:var(--s-arc);background:color-mix(in srgb,var(--s-arc) 10%,var(--surface))}
+.rules,.notes{margin:10px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.notes{gap:10px}
+.notes a{color:var(--s-arc)}
+@media (max-width:430px){.tabs button{font-size:10.5px;gap:1px}.tabs button svg{width:20px;height:20px}}
+
 /* ---- Thời khóa biểu ---- */
 .seg{display:flex;gap:4px;background:var(--surface2);border-radius:12px;padding:4px;flex-wrap:wrap}
 .seg button{flex:1;border:0;background:transparent;border-radius:9px;padding:9px 12px;font-weight:500;color:var(--muted);min-height:42px}
@@ -265,10 +298,12 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     <button data-a="tab" data-t="uu-tien">Ưu tiên</button>
     <button data-a="tab" data-t="content">Content</button>
     <button data-a="tab" data-t="hoc">Lịch học</button>
+    <button data-a="tab" data-t="arc">Lock in</button>
   </nav>
   <div class="tools"><span id="status" role="status"></span><button class="btn sm" data-a="settings">Cài đặt</button></div>
 </div></header>
 <div class="wrap">
+  <div id="strip"></div>
   <div id="banner"></div>
 
   <main>
@@ -297,6 +332,7 @@ học bài Agent Boss tối 2 tiếng"></textarea>
     <section id="v-uu-tien" class="view stack"></section>
     <section id="v-content" class="view stack"></section>
     <section id="v-hoc" class="view stack"></section>
+    <section id="v-arc" class="view stack"></section>
   </main>
 </div>
 <footer class="foot"><span><b>Gom Việc</b> · Sổ tay gom việc, xếp lịch và thử kế hoạch học cho người bận rộn</span><span>Việc ghi ở đây được lưu ngay trong trình duyệt đang dùng, không gửi đi đâu.</span></footer>
@@ -371,6 +407,9 @@ function loadLocal(){try{var r=localStorage.getItem(LS);if(r)return JSON.parse(r
 function fix(s){
   s.settings=Object.assign({start:8,end:20,cap:6,maxDay:9},s.settings||{});
   s.fixed=s.fixed||[];
+  s.arc=Object.assign({vow:'Về quê để tu thân, không phải để nghỉ ngơi.',start:TODAY,end:'2027-02-05',wake:'05:30',sleepH:7.5,mode:'scholar',subjects:['','',''],applied:false,
+    rules:'Điện thoại để ngoài tầm tay trong mỗi khối học sâu.\nKhông lướt mạng xã hội trước khi xong khối học sâu đầu tiên.\nChỉ gặp họ hàng, bạn bè vào Chủ nhật hoặc sau 19:00.\nĐã nhận lời giúp nhà thì làm gọn, đừng để thành cả ngày.'},s.arc||{});
+  s.arc.log=s.arc.log||{};s.arc.subjects=s.arc.subjects||['','',''];
   s.learn=s.learn||[];
   s.tasks=s.tasks||[];s.habits=s.habits||[];s.habitLog=s.habitLog||{};s.posts=s.posts||[];
   return s;
@@ -485,7 +524,7 @@ function parseDump(text){
 function autoSchedule(avoid){
   var st=S.settings,ds=st.start*60,de=st.end*60,capM=st.cap*60,LS_=720,LE=810;
   var open=S.tasks.filter(function(t){return !t.done});
-  var fxMin=function(d){return blocksOn(d,true).reduce(function(s,b){return s+b.e-b.s},0)};
+  var fxMin=function(d){return blocksOn(d,true).filter(function(b){return !b.rest}).reduce(function(s,b){return s+b.e-b.s},0)};
   var loadOf=function(d){return fxMin(d)+open.filter(function(t){return t.date===d}).reduce(function(s,t){return s+t.dur},0)};
   var busy=function(d){return open.filter(function(t){return t.date===d&&t.time}).map(function(t){return [toMin(t.time),toMin(t.time)+t.dur]}).concat(blocksOn(d,true).map(function(b){return [b.s,b.e]})).concat([[LS_,LE]]).sort(function(a,b){return a[0]-b[0]})};
   var find=function(d,dur){
@@ -575,7 +614,7 @@ function renderToday(){
   var load=open.reduce(function(s,t){return s+t.dur},0),capM=st.cap*60;
   var windowM=(st.end-st.start)*60-90;
   var fxb=blocksOn(d,true).filter(function(b){return !b.try}).sort(function(a,b){return a.s-b.s});
-  var free=Math.max(0,windowM-load-fxb.reduce(function(s,b){return s+b.e-b.s},0));
+  var free=Math.max(0,windowM-load-fxb.filter(function(b){return !b.rest}).reduce(function(s,b){return s+b.e-b.s},0));
   var h='<div class="panel"><div class="head"><div><h2>'+dLabel(d)+'</h2>'+(isToday?'<p class="muted small">Hôm nay</p>':'')+'</div>'+
     '<div class="nav"><button class="btn sm" data-a="dayprev" aria-label="Ngày trước">‹</button><button class="btn sm" data-a="daytoday">Hôm nay</button><button class="btn sm" data-a="daynext" aria-label="Ngày sau">›</button></div></div>';
   var pct=Math.min(100,Math.round(load/capM*100));
@@ -642,7 +681,7 @@ function renderWeek(){
     var d=addDays(w,j),dt=pYmd(d);
     var its=S.tasks.filter(function(t){return t.date===d}).sort(function(a,b){return (a.time||'99').localeCompare(b.time||'99')});
     var fxb=blocksOn(d,true).sort(function(a,b){return a.s-b.s});
-    var load=its.filter(function(t){return !t.done}).reduce(function(s,t){return s+t.dur},0)+fxb.filter(function(b){return !b.try}).reduce(function(s,b){return s+b.e-b.s},0);
+    var load=its.filter(function(t){return !t.done}).reduce(function(s,t){return s+t.dur},0)+fxb.filter(function(b){return !b.try&&!b.rest}).reduce(function(s,b){return s+b.e-b.s},0);
     var posts=S.posts.filter(function(p){return p.date===d});
     var hn=S.habits.filter(function(x){return x.days.indexOf(dt.getDay())>-1}).length;
     h+='<div class="panel day'+(d===TODAY?' today':'')+'"><button class="dh" data-a="gotoday" data-date="'+d+'"><b>'+WDs[dt.getDay()]+' '+pad(dt.getDate())+'/'+pad(dt.getMonth()+1)+'</b><span class="small muted">'+(load?durLabel(load):'trống')+'</span></button>'+
@@ -705,7 +744,7 @@ function renderContent(){
 /* ---------- Thời khóa biểu: lịch cố định, khóa học, tự học ---------- */
 var PRI=['Cao','Vừa','Thấp'];
 var hh=function(m){return (Math.round(m/6)/10).toString().replace('.',',')+' giờ'};
-var KIND={course:'Khóa học',work:'Giờ làm cố định',other:'Việc cố định khác'};
+var KIND={course:'Khóa học',work:'Giờ làm cố định',other:'Việc cố định khác',arc:'Lock in'};
 var WIN={sang:['Buổi sáng',480,690],chieu:['Buổi chiều',810,1050],toi:['Buổi tối',1080,1320],ngay:['Cả ngày',360,1320]};
 var G0=360,G1=1380,HPX=46;
 var DORD=[1,2,3,4,5,6,0];
@@ -724,7 +763,7 @@ function blocksOn(d,tr){
     if(f.days.indexOf(wd)<0)return;
     if(f.from&&d<f.from)return;
     if(f.to&&d>f.to)return;
-    out.push({id:f.id,src:'fixed',kind:f.kind,title:f.title,s:toMin(f.start),e:toMin(f.end),try:!!f.try,date:d});
+    out.push({id:f.id,src:'fixed',kind:f.kind,title:f.title,s:toMin(f.start),e:toMin(f.end),try:!!f.try,rest:!!f.rest,date:d});
   });
   S.learn.forEach(function(x){
     if(x.try&&!tr)return;
@@ -749,7 +788,7 @@ function analyzeWeek(w){
   var r={days:[],conf:[],warns:[],bad:{}},maxM=S.settings.maxDay*60;
   for(var i=0;i<7;i++){
     var d=addDays(w,i),bl=allBlocks(d,true),total=0;
-    bl.forEach(function(b){total+=b.e-b.s});
+    bl.forEach(function(b){if(!b.rest)total+=b.e-b.s});
     for(var a=0;a<bl.length;a++)for(var c=a+1;c<bl.length;c++){
       if(bl[c].s<bl[a].e&&bl[a].s<bl[c].e){
         r.conf.push({d:d,a:bl[a],b:bl[c]});
@@ -759,13 +798,13 @@ function analyzeWeek(w){
     if(total>maxM)r.warns.push(dLabel(d)+' kín '+hh(total)+', hơn mức '+S.settings.maxDay+' giờ mỗi ngày. Nên dời bớt việc.');
     var runS=null,runE=0;
     var endRun=function(){if(runS!==null&&runE-runS>240)r.warns.push(dLabel(d)+': làm liền '+hh(runE-runS)+' không nghỉ (từ '+fromMin(runS)+' đến '+fromMin(runE)+'). Nên chừa ít nhất 15 phút nghỉ.')};
-    bl.forEach(function(b){
+    bl.filter(function(b){return !b.rest}).forEach(function(b){
       if(runS===null){runS=b.s;runE=b.e}
       else if(b.s-runE<15){runE=Math.max(runE,b.e)}
       else{endRun();runS=b.s;runE=b.e}
     });
     endRun();
-    var late=bl.filter(function(b){return b.e>22*60});
+    var late=bl.filter(function(b){return b.e>22*60&&!b.rest});
     if(late.length)r.warns.push(dLabel(d)+': "'+late[0].title+'" kết thúc lúc '+fromMin(late[0].e)+', khá muộn.');
     r.days.push({d:d,blocks:bl,total:total});
   }
@@ -780,7 +819,7 @@ function freeWeek(){
     var d=addDays(TODAY,i);
     if(pYmd(d).getDay()===0)continue;
     var tl_=S.tasks.filter(function(t){return !t.done&&!t.learnId&&t.date===d}).reduce(function(s,t){return s+t.dur},0);
-    var fx=blocksOn(d,false).reduce(function(s,b){return s+b.e-b.s},0);
+    var fx=blocksOn(d,false).filter(function(b){return !b.rest}).reduce(function(s,b){return s+b.e-b.s},0);
     var room=Math.max(0,Math.min(win-fx,capM-tl_));
     if(i===0)room=Math.round(room*Math.max(0,(de-Math.max(ds,nowMin()))/(de-ds)));
     free+=room;
@@ -850,7 +889,7 @@ function gridHtml(an){
     dy.blocks.forEach(function(b){
       var top=(Math.max(b.s,G0)-G0)/60*HPX,ht=Math.max(22,(Math.min(b.e,G1)-Math.max(b.s,G0))/60*HPX-2);
       var bad=an.bad[dy.d+b.src+b.id+b.s];
-      h+='<button class="blk'+(b.src==='task'?' kt c-'+b.cat:' k-'+b.kind)+(b.try?' try':'')+(bad?' bad':'')+'" style="top:'+top+'px;height:'+ht+'px;left:calc('+(b.col*100/b.n)+'% + 1px);width:calc('+(100/b.n)+'% - 2px)" data-a="blk" data-src="'+b.src+'" data-id="'+b.id+'" title="'+esc(b.title+' '+tl(b))+'">'+((b.e-b.s)<=40?'<b>'+fromMin(b.s)+' '+esc(b.title)+'</b>':'<b>'+esc(b.title)+'</b><span>'+tl(b)+(b.try?' · thử':'')+'</span>')+'</button>';
+      h+='<button class="blk'+(b.src==='task'?' kt c-'+b.cat:' k-'+b.kind)+(b.try?' try':'')+(b.rest?' rest':'')+(bad?' bad':'')+'" style="top:'+top+'px;height:'+ht+'px;left:calc('+(b.col*100/b.n)+'% + 1px);width:calc('+(100/b.n)+'% - 2px)" data-a="blk" data-src="'+b.src+'" data-id="'+b.id+'" title="'+esc(b.title+' '+tl(b))+'">'+((b.e-b.s)<=40?'<b>'+fromMin(b.s)+' '+esc(b.title)+'</b>':'<b>'+esc(b.title)+'</b><span>'+tl(b)+(b.try?' · thử':'')+'</span>')+'</button>';
     });
     h+='</div>';
   });
@@ -988,13 +1027,176 @@ function fixedForm(id){
   setTimeout(function(){var e=$('#xTitle');if(e)e.focus()},30);
 }
 
+/* ---------- Lock in: winter arc đến Tết ---------- */
+var MODES={
+  steady:{name:'Vững',deep:2,review:30,desc:'2 khối học sâu, khoảng 3 giờ mỗi ngày. Dễ giữ lâu, hợp để bắt đầu.'},
+  scholar:{name:'Học bá',deep:3,review:45,desc:'3 khối học sâu, khoảng 4,5 giờ mỗi ngày. Sát mức người giỏi duy trì được lâu dài.'},
+  obsess:{name:'Ám ảnh có kiểm soát',deep:4,review:60,desc:'4 khối học sâu, 6 giờ mỗi ngày. Rất nặng. Chỉ giữ nếu tuần đầu vẫn thấy khỏe, và giấc ngủ không được cắt.'}
+};
+var WAKES=['04:30','05:00','05:30','06:00','06:30','07:00'];
+var SLEEPS=[7,7.5,8,8.5,9];
+var MSGS=[
+  'Chưa muộn. Muộn là khi mình không bắt đầu ngày hôm nay.',
+  'Về quê là để tu thân. Nghỉ ngơi là phần thưởng sau khi xong việc, không phải kế hoạch.',
+  'Khối học sâu đầu tiên của ngày quyết định cả ngày.',
+  'Ngủ đủ là một phần của việc học, không phải thời gian bỏ phí.',
+  'Điện thoại ngoài tầm tay trong 90 phút. Chỉ 90 phút thôi.',
+  'Đừng chờ có hứng. Ngồi xuống, đặt đồng hồ, làm đến hết khối.',
+  'Mỗi lần check-in là một lá phiếu cho con người mình muốn trở thành.',
+  'Mình đang đua với chính mình của ngày hôm qua, không đua với ai khác.',
+  'Hôm nay làm ít vẫn hơn không làm. Giữ chuỗi ngày.',
+  'Ở đâu cũng có thể giỏi lên, chỉ cần giữ nhịp đều.',
+  'Mệt thì giảm cường độ, đừng bỏ ngày.',
+  'Tết đến, mình muốn về nhà với phiên bản nào của mình?'
+];
+var fmtD=function(s){var p=s.split('-');return p[2]+'/'+p[1]+'/'+p[0]};
+var dDiff=function(a,b){return Math.round((pYmd(a)-pYmd(b))/86400000)};
+V.arcDate=null;
+function arcBed(a){return toMin(a.wake)-Math.round(a.sleepH*60)+1440}
+function logOf(d){return S.arc.log[d]||{sleep:0,move:0,deep:0}}
+function dayState(d){
+  var md=MODES[S.arc.mode]||MODES.scholar,l=S.arc.log[d];
+  var sun=pYmd(d).getDay()===0,minDeep=sun?0:Math.max(1,md.deep-1);
+  if(!l)return 0;
+  if(l.sleep&&l.deep>=minDeep)return 2;
+  if(l.sleep||l.move||l.deep>0)return 1;
+  return 0;
+}
+function streak(){
+  var n=0,d=TODAY;
+  if(dayState(d)!==2)d=addDays(d,-1);
+  while(d>=S.arc.start&&dayState(d)===2){n++;d=addDays(d,-1)}
+  return n;
+}
+
+/* Dựng một ngày học bá: các khối được xếp vào giờ trống, tránh khóa học và lịch cố định của chị */
+function arcDay(wd){
+  var a=S.arc,W=toMin(a.wake),bed=arcBed(a),bedE=Math.min(bed,1439),md=MODES[a.mode]||MODES.scholar,sun=(wd===0);
+  var busy=[],blocks=[],missing=0;
+  S.fixed.forEach(function(f){if(!f.arc&&f.days.indexOf(wd)>-1)busy.push([toMin(f.start),toMin(f.end)])});
+  S.learn.forEach(function(x){(x.slots||[]).forEach(function(sl){if(sl.d===wd)busy.push([toMin(sl.t),toMin(sl.t)+x.sess])})});
+  var put=function(title,s,e,rest){blocks.push({title:title,s:s,e:e,rest:rest});busy.push([s,e])};
+  var free=function(s,e){return busy.every(function(b){return e+10<=b[0]||s>=b[1]+10})};
+  var slot=function(from,dur,limit){for(var s=Math.ceil(from/15)*15;s+dur<=limit;s+=15){if(free(s,s+dur))return s}return null};
+  var subs=a.subjects.filter(function(x){return x&&x.trim()});
+  put('Dậy, uống nước, vận động ngoài trời',W,W+45,true);
+  put('Tắt màn hình, tắm, đọc sách giấy',bed-60,bedE,true);
+  put('Tổng kết ngày và lên kế hoạch mai',bed-75,bed-60,true);
+  if(sun){
+    var s1=slot(W+75,60,720);
+    if(s1!==null)put('Tổng kết tuần và lập kế hoạch tuần mới',s1,s1+60,false);
+    var s2=slot(840,45,bed-90);
+    if(s2!==null)put('Ôn lại cách quãng (tự nhớ lại, không đọc lại)',s2,s2+45,false);
+  }else{
+    put('Ăn trưa và chợp mắt tối đa 20 phút',720,810,true);
+    var cursor=W+75;
+    for(var k=0;k<md.deep;k++){
+      var s=slot(cursor,90,bed-150);
+      if(s===null){missing++;continue}
+      put('Học sâu '+(k+1)+(subs.length?': '+subs[k%subs.length]:''),s,s+90,false);
+      cursor=s+105;
+    }
+    var r=slot(Math.max(cursor,1110),md.review,bed-75);
+    if(r!==null)put('Ôn lại cách quãng (tự nhớ lại, không đọc lại)',r,r+md.review,false);
+  }
+  blocks.sort(function(p,q){return p.s-q.s});
+  return {blocks:blocks,missing:missing};
+}
+function arcApply(){
+  S.fixed=S.fixed.filter(function(f){return !f.arc});
+  var groups={},report=[];
+  [1,2,3,4,5,6,0].forEach(function(wd){
+    var r=arcDay(wd);
+    if(r.missing)report.push(WDs[wd]+': thiếu '+r.missing+' khối học sâu');
+    r.blocks.forEach(function(b){var k=b.title+'|'+b.s+'|'+b.e;(groups[k]=groups[k]||{b:b,days:[]}).days.push(wd)});
+  });
+  var from=S.arc.start>TODAY?S.arc.start:TODAY;
+  Object.keys(groups).forEach(function(k){
+    var g=groups[k];
+    S.fixed.push({id:uid(),title:g.b.title,kind:'arc',days:g.days,start:fromMin(g.b.s),end:fromMin(g.b.e),from:from,to:S.arc.end,try:false,arc:true,rest:!!g.b.rest});
+  });
+  S.arc.applied=true;
+  return {n:Object.keys(groups).length,report:report};
+}
+
+function renderArc(){
+  var a=S.arc,md=MODES[a.mode]||MODES.scholar;
+  var total=Math.max(1,dDiff(a.end,a.start)+1),left=Math.max(0,dDiff(a.end,TODAY)),done=Math.min(total,Math.max(0,dDiff(TODAY,a.start)));
+  var pct=Math.round(done/total*100),hrs=0;
+  for(var i=0;i<=left;i++){if(pYmd(addDays(TODAY,i)).getDay()!==0)hrs+=md.deep*1.5}
+  var msg=MSGS[Math.abs(dDiff(TODAY,'2026-01-01'))%MSGS.length];
+  var h='<div class="panel arc-count"><div class="arc-num"><b>'+left+'</b><span>ngày nữa đến Giao thừa '+fmtD(a.end)+'</span></div>'+
+    '<div class="bar" style="margin:14px 0 6px"><i style="width:'+pct+'%"></i></div>'+
+    '<p class="small muted">Đã đi '+done+' trên '+total+' ngày ('+pct+'%), bắt đầu từ '+fmtD(a.start)+'.</p>'+
+    '<p class="small" style="margin-top:8px">Nếu giữ đúng nhịp <b>'+md.name+'</b>, đến Giao thừa chị có thêm khoảng <b>'+Math.round(hrs)+' giờ học sâu</b>.</p></div>';
+  h+='<div class="panel"><div class="head"><h3 style="margin:0">Lời thề của mình</h3><button class="btn sm" data-a="arcform">Sửa</button></div>'+
+    '<blockquote class="vow">'+esc(a.vow)+'</blockquote><p class="small muted">'+esc(msg)+'</p></div>';
+
+  var cd=V.arcDate||TODAY,l=logOf(cd),sun=pYmd(cd).getDay()===0,minDeep=sun?0:Math.max(1,md.deep-1);
+  h+='<div class="panel"><div class="head"><h3 style="margin:0">Check-in '+(cd===TODAY?'hôm nay':dLabel(cd))+'</h3><span class="chip imp">Chuỗi '+streak()+' ngày</span></div>'+
+    '<p class="small muted" style="margin:4px 0 8px">'+(sun?'Chủ nhật là ngày tổng kết và nghỉ có chủ đích. Chỉ cần ngủ đủ là tính đạt.':'Ngày đạt cần ngủ đủ và xong ít nhất '+minDeep+' khối học sâu.')+'</p>'+
+    '<div class="row"><button class="chk'+(l.sleep?' on':'')+'" data-a="arctoggle" data-k="sleep" aria-label="Ngủ đủ">'+(l.sleep?'✓':'')+'</button><div class="body"><span class="ttl">Ngủ đủ '+a.sleepH.toString().replace('.',',')+' giờ đêm qua</span><div class="meta">Đi ngủ lúc '+fromMin(arcBed(a)%1440)+', dậy lúc '+a.wake+'</div></div></div>'+
+    '<div class="row"><button class="chk'+(l.move?' on':'')+'" data-a="arctoggle" data-k="move" aria-label="Vận động">'+(l.move?'✓':'')+'</button><div class="body"><span class="ttl">Vận động buổi sáng</span><div class="meta">Đi bộ, chạy hoặc giãn cơ ngoài trời 20 đến 30 phút</div></div></div>'+
+    '<div class="row"><div class="body"><span class="ttl">Số khối học sâu đã xong</span><div class="meta">Mỗi khối 90 phút, không điện thoại. Mục tiêu '+md.deep+' khối.</div></div><div class="nav"><button class="btn sm" data-a="arcdeep" data-dir="-1" aria-label="Bớt một khối">−</button><b class="tm" style="min-width:22px;text-align:center">'+l.deep+'</b><button class="btn sm" data-a="arcdeep" data-dir="1" aria-label="Thêm một khối">+</button></div></div>';
+  var wk0=mondayOf(a.start),wkN=Math.ceil((dDiff(a.end,wk0)+1)/7),cells='';
+  for(var w=0;w<wkN;w++)for(var dd=0;dd<7;dd++){
+    var dt=addDays(wk0,w*7+dd),inr=dt>=a.start&&dt<=a.end;
+    if(!inr){cells+='<span class="hm off"></span>';continue}
+    var stt=dt>TODAY?'fut':'s'+dayState(dt);
+    cells+='<button class="hm '+stt+(dt===TODAY?' today':'')+(dt===cd?' sel':'')+'" data-a="arcday" data-d="'+dt+'" title="'+esc(dLabel(dt))+'" aria-label="'+esc(dLabel(dt))+'"></button>';
+  }
+  h+='<h3 style="margin-top:16px">Bản đồ chuỗi ngày</h3><div class="scroll-x"><div class="hmap" style="--wk:'+wkN+'">'+cells+'</div></div>'+
+    '<div class="legend" style="margin-top:8px"><span class="hmk s2">Ngày đạt</span><span class="hmk s1">Làm một phần</span><span class="hmk s0">Chưa làm</span></div><p class="small muted" style="margin-top:6px">Mỗi cột là một tuần, hàng trên cùng là thứ 2. Bấm vào một ô để bổ sung check-in cho ngày đó.</p></div>';
+
+  var bed=arcBed(a),bedTxt=fromMin(bed%1440);
+  h+='<div class="panel"><h3>Nhịp ngày của mình</h3><div class="form two">'+
+    '<label class="f">Giờ dậy cố định (kể cả Chủ nhật)<select data-arc="wake">'+WAKES.map(function(x){return '<option'+(x===a.wake?' selected':'')+'>'+x+'</option>'}).join('')+'</select></label>'+
+    '<label class="f">Số giờ ngủ mỗi đêm<select data-arc="sleepH">'+SLEEPS.map(function(x){return '<option value="'+x+'"'+(x===a.sleepH?' selected':'')+'>'+x.toString().replace('.',',')+' giờ</option>'}).join('')+'</select></label></div>'+
+    '<p class="small" style="margin:10px 0"><b>Giờ đi ngủ: '+bedTxt+'.</b> Tắt màn hình từ '+fromMin((bed-60)%1440)+'.'+(bed>1380?' Giờ này hơi muộn, chị thử dậy muộn hơn hoặc ngủ sớm hơn.':'')+'</p>'+
+    '<p class="small muted" style="margin-bottom:8px">Ứng dụng không cho ngủ dưới 7 giờ. Ngủ thiếu là cách nhanh nhất để học không vào.</p>'+
+    '<h3 style="margin-top:14px">Chọn cường độ</h3><div class="modes">'+Object.keys(MODES).map(function(k){var m=MODES[k];return '<button class="mode'+(k===a.mode?' on':'')+'" data-a="arcmode" data-m="'+k+'"><b>'+m.name+'</b><span>'+m.desc+'</span></button>'}).join('')+'</div>'+
+    (a.mode==='obsess'?'<p class="small" style="margin-top:8px;color:var(--warn)">Lưu ý: nghiên cứu về luyện tập có chủ đích thấy người giỏi nhất thường chỉ duy trì khoảng 4 đến 5 giờ mỗi ngày. 6 giờ là mức cao, chị thử một tuần rồi xem cơ thể thế nào.</p>':'')+
+    '<h3 style="margin-top:14px">Môn chính của mùa này</h3><p class="small muted" style="margin-bottom:8px">Ghi tối đa 3 môn hoặc mục tiêu. Các khối học sâu sẽ lần lượt dành cho từng môn.</p><div class="form">'+
+    [0,1,2].map(function(i){return '<label class="f">Môn '+(i+1)+'<input type="text" data-arc="sub'+i+'" value="'+esc(a.subjects[i]||'')+'" placeholder="'+['Ví dụ: Tiếng Anh TOEIC','Ví dụ: Viết content và kịch bản','Ví dụ: Công cụ AI cho công việc'][i]+'"></label>'}).join('')+'</div></div>';
+
+  var wd1=arcDay(1),sunD=arcDay(0);
+  var rowsOf=function(r){return r.blocks.map(function(b){return '<div class="row"><div class="body"><span class="ttl">'+esc(b.title)+'</span><div class="meta"><span class="tm">'+fromMin(b.s)+'–'+fromMin(b.e)+'</span>'+(b.rest?'<span class="chip">Nghỉ, nền nếp</span>':'<span class="chip imp">Học</span>')+'</div></div></div>'}).join('')};
+  h+='<div class="panel"><h3>Một ngày thường (thứ 2 đến thứ 7)</h3>'+rowsOf(wd1)+
+    (wd1.missing?'<p class="small" style="color:var(--warn);margin-top:8px">Thứ 2 chỉ xếp được '+(md.deep-wd1.missing)+' trên '+md.deep+' khối học sâu vì lịch cố định đã kín giờ.</p>':'')+
+    '<h3 style="margin-top:16px">Chủ nhật</h3>'+rowsOf(sunD)+
+    '<div class="actions"><button class="btn primary" data-a="arcapply">'+(a.applied?'Áp dụng lại vào thời khóa biểu':'Áp dụng vào thời khóa biểu')+'</button>'+(a.applied?'<button class="btn" data-a="arcremove">Gỡ khỏi thời khóa biểu</button>':'')+'</div>'+
+    '<p class="small muted" style="margin-top:8px">Các khối này được xếp vào giờ trống, tránh khóa học và lịch cố định chị đã nhập ở tab Lịch học. Đổi nhịp xong thì bấm áp dụng lại.</p></div>';
+
+  h+='<div class="panel"><h3>Quy tắc khi ở quê</h3><label class="f"><span class="small muted">Mỗi dòng một quy tắc. Sửa xong bấm ra ngoài là tự lưu.</span><textarea data-arc="rules" rows="5" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);line-height:1.6">'+esc(a.rules)+'</textarea></label>'+
+    '<ul class="rules">'+a.rules.split('\n').filter(function(x){return x.trim()}).map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul></div>';
+
+  h+='<div class="panel"><h3>Vì sao xếp như vậy?</h3><ul class="notes">'+
+    '<li><b>Giấc ngủ (có nghiên cứu).</b> Hiệp hội Y học Giấc ngủ Hoa Kỳ và Hội Nghiên cứu Giấc ngủ đồng thuận rằng người trưởng thành nên ngủ từ 7 giờ trở lên mỗi đêm, ngủ 6 giờ trở xuống là không đủ để giữ sức khỏe và sự tỉnh táo. <a href="https://aasm.org/seven-or-more-hours-of-sleep-per-night-a-health-necessity-for-adults/" target="_blank" rel="noopener">Xem bản tin của AASM</a>.</li>'+
+    '<li><b>Thời lượng học sâu (có nghiên cứu, còn tranh cãi).</b> Nghiên cứu của Ericsson và cộng sự năm 1993 thấy nhóm nhạc công giỏi nhất thường luyện tập có chủ đích khoảng 4 giờ mỗi ngày. Các tóm tắt sau này nói 4 đến 5 giờ là mức duy trì được. Có nghiên cứu lặp lại năm 2019 đặt lại câu hỏi về kết quả này, nên mình xem đó là mốc tham khảo, không phải luật.</li>'+
+    '<li><b>Ôn cách quãng (có nghiên cứu).</b> Tổng hợp của Cepeda và cộng sự năm 2006 trên hàng trăm thí nghiệm cho thấy học rải ra nhiều lần nhớ lâu hơn học dồn một lần. <a href="https://www.yorku.ca/ncepeda/publications/CPVWR2006.html" target="_blank" rel="noopener">Xem bài gốc</a>.</li>'+
+    '<li><b>Cách mình thiết kế (không phải kết quả nghiên cứu).</b> Mỗi khối 90 phút rồi nghỉ 15 phút, khối học sâu đặt sớm lúc đầu óc còn tỉnh, nghỉ trưa và chợp mắt ngắn, tắt màn hình 1 giờ trước khi ngủ, Chủ nhật tổng kết tuần. Đây là gợi ý chung, chị chỉnh theo cơ thể mình. Nếu hay mất ngủ hoặc mệt kéo dài thì nên hỏi bác sĩ.</li></ul></div>';
+  $('#v-arc').innerHTML=hero('arc')+h;
+}
+function arcForm(){
+  var a=S.arc;
+  sheet('<h2>Lời thề và mốc thời gian</h2><div class="form"><label class="f">Lời thề của mình<textarea id="aVow" rows="3" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);line-height:1.5">'+esc(a.vow)+'</textarea></label>'+
+    '<div class="form two"><label class="f">Bắt đầu từ ngày<input type="date" id="aStart" value="'+a.start+'"></label><label class="f">Kết thúc vào ngày (Giao thừa 2027 là 05/02)<input type="date" id="aEnd" value="'+a.end+'"></label></div>'+
+    '<div class="actions"><button class="btn primary" data-a="savearc">Lưu</button><button class="btn" data-a="close">Hủy</button></div></div>');
+}
+function stripHtml(){
+  if(V.tab==='arc')return '';
+  var a=S.arc,left=Math.max(0,dDiff(a.end,TODAY)),n=streak();
+  return '<button class="strip" data-a="tab" data-t="arc"><b>Lock in · còn '+left+' ngày đến Tết</b><span class="svow">'+esc(a.vow)+'</span>'+(n?'<span class="chip imp">Chuỗi '+n+'</span>':'')+'</button>';
+}
+
 var IC={
   gom:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/>',
   'hom-nay':'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
   tuan:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
   'uu-tien':'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
   content:'<path d="M4 20l4-1 11-11a2.1 2.1 0 0 0-3-3L5 16l-1 4z"/>',
-  hoc:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5zM4 19a2 2 0 0 1 2-2h13"/>'
+  hoc:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2V5zM4 19a2 2 0 0 1 2-2h13"/>',
+  arc:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/>'
 };
 var svg=function(k){return '<svg viewBox="0 0 24 24" aria-hidden="true">'+IC[k]+'</svg>'};
 var HERO={
@@ -1003,6 +1205,7 @@ var HERO={
   tuan:['Cả tuần','Nhìn 7 ngày một lượt để biết ngày nào quá đầy, ngày nào còn rảnh.'],
   'uu-tien':['Làm gì trước','Việc được chia thành 4 ô theo mức gấp và quan trọng. Bấm vào tên việc để đổi mức.'],
   content:['Lịch bài đăng','Ghi ý tưởng bài Facebook, TikTok rồi đẩy dần từ ý tưởng đến đã đăng.'],
+  arc:['Lock in','Về quê để tu thân. Nhịp ngủ, học và lời nhắc mỗi ngày cho đến Tết. Chưa muộn, chỉ cần bắt đầu và giữ đều.'],
   hoc:['Thời khóa biểu','Ghi lịch học cố định, khóa học định đăng ký, buổi tự học và việc khác. Ứng dụng xếp vào bảng theo thứ, giờ, ngày và báo khi trùng hoặc quá dày.']
 };
 function hero(k,action){return '<div class="hero"><div class="ic">'+svg(k)+'</div><div class="tx"><h2>'+HERO[k][0]+'</h2><p>'+HERO[k][1]+'</p></div>'+(action||'')+'</div>'}
@@ -1014,12 +1217,14 @@ function render(){
   document.querySelectorAll('.tabs button').forEach(function(b){b.setAttribute('aria-current',b.dataset.t===V.tab?'true':'false')});
   document.querySelectorAll('.view').forEach(function(v){v.classList.toggle('on',v.id==='v-'+V.tab)});
   renderBanner();
+  $('#strip').innerHTML=stripHtml();
   if(V.tab==='gom')renderInbox();
   else if(V.tab==='hom-nay')renderToday();
   else if(V.tab==='tuan')renderWeek();
   else if(V.tab==='uu-tien')renderMatrix();
   else if(V.tab==='content')renderContent();
   else if(V.tab==='hoc')renderTkb();
+  else if(V.tab==='arc')renderArc();
 }
 function go(tab){V.tab=tab;try{history.replaceState(null,'','#'+tab)}catch(e){location.hash=tab}render();window.scrollTo(0,0)}
 
@@ -1193,6 +1398,28 @@ document.addEventListener('click',function(e){
     var after=analyzeWeek(V.tkb).conf.length;
     toast(after?('Đã sửa bớt, còn '+after+' chỗ trùng. Chỗ còn lại là hai lịch cố định trùng nhau, chị cần tự đổi giờ.'):'Đã sửa hết các chỗ trùng trong tuần này.');
   }
+  else if(a==='arcform'){arcForm()}
+  else if(a==='savearc'){
+    var av=$('#aVow').value.trim(),as_=$('#aStart').value,ae=$('#aEnd').value;
+    if(!av||!as_||!ae||ae<as_){toast('Chị kiểm tra lại lời thề, ngày bắt đầu và ngày kết thúc nhé.');return}
+    S.arc.vow=av;S.arc.start=as_;S.arc.end=ae;closeModal();persist();render();
+  }
+  else if(a==='arcmode'){S.arc.mode=b.dataset.m;persist();render()}
+  else if(a==='arctoggle'){
+    var cdk=V.arcDate||TODAY,lg=S.arc.log[cdk]||(S.arc.log[cdk]={sleep:0,move:0,deep:0});
+    lg[b.dataset.k]=lg[b.dataset.k]?0:1;persist();render();
+  }
+  else if(a==='arcdeep'){
+    var cdk2=V.arcDate||TODAY,lg2=S.arc.log[cdk2]||(S.arc.log[cdk2]={sleep:0,move:0,deep:0});
+    lg2.deep=Math.max(0,Math.min(8,lg2.deep+parseInt(b.dataset.dir,10)));persist();render();
+  }
+  else if(a==='arcday'){V.arcDate=b.dataset.d;render()}
+  else if(a==='arcapply'){
+    var ar=arcApply();persist();render();
+    var cf=0;for(var cw=0;cw<4;cw++)cf+=analyzeWeek(addDays(mondayOf(TODAY),cw*7)).conf.length;
+    toast('Đã thêm '+ar.n+' khối Lock in vào thời khóa biểu.'+(ar.report.length?' '+ar.report.join('; ')+'.':'')+(cf?' Có '+cf+' chỗ trùng với việc đã có giờ, chị bấm "Tự sửa các chỗ trùng" ở tab Lịch học.':''));
+  }
+  else if(a==='arcremove'){S.fixed=S.fixed.filter(function(f){return !f.arc});S.arc.applied=false;persist();render();toast('Đã gỡ các khối Lock in khỏi thời khóa biểu.')}
   else if(a==='settings'){settingsForm()}
   else if(a==='savesettings'){
     var s1=parseInt($('#sStart').value,10),s2=parseInt($('#sEnd').value,10),s3=parseInt($('#sCap').value,10);
@@ -1207,13 +1434,22 @@ document.addEventListener('click',function(e){
   }
 });
 ['input','change'].forEach(function(ev){document.addEventListener(ev,function(e){if(e.target.closest&&e.target.closest('#modal')&&$('#fCheck'))fixedCheck()})});
+document.addEventListener('change',function(e){
+  var k=e.target.dataset&&e.target.dataset.arc;if(!k)return;
+  var v=e.target.value;
+  if(k==='wake')S.arc.wake=v;
+  else if(k==='sleepH')S.arc.sleepH=Math.max(7,parseFloat(v)||7.5);
+  else if(k==='rules')S.arc.rules=v;
+  else if(k.indexOf('sub')===0)S.arc.subjects[+k.slice(3)]=v;
+  persist();render();
+});
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape')closeModal();
   if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)&&document.activeElement&&document.activeElement.id==='dump'){var b=$('[data-a="parse"]');if(b)b.click()}
   if(e.key==='Enter'&&document.activeElement&&(document.activeElement.id==='fTitle')){var s=$('[data-a="savetask"]');if(s)s.click()}
   if(e.key==='Enter'&&document.activeElement&&document.activeElement.id==='pIdea'){var p=$('[data-a="postadd"]');if(p)p.click()}
 });
-var TABS=['gom','hom-nay','tuan','uu-tien','content','hoc'];
+var TABS=['gom','hom-nay','tuan','uu-tien','content','hoc','arc'];
 window.addEventListener('hashchange',function(){var h=location.hash.slice(1);if(TABS.indexOf(h)>-1&&h!==V.tab){V.tab=h;render()}});
 
 var h0=location.hash.slice(1);
