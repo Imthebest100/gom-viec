@@ -1,5 +1,5 @@
 /* Gom Việc: file chạy nền. Giữ app mở được khi mất mạng và hiện thông báo nhắc việc. */
-const CACHE = 'gom-viec-v2';
+const CACHE = 'gom-viec-v3';
 const SHELL = ['./', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-180.png'];
 
 self.addEventListener('install', (e) => {

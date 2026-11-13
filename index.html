@@ -113,8 +113,8 @@ textarea#dump{width:100%;min-height:150px;resize:vertical;padding:12px;border:1p
 .chip{display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;font-weight:500;background:var(--surface2);color:var(--muted);white-space:nowrap}
 .chip.hot{background:var(--warn-bg);color:var(--warn)}
 .chip.imp{background:color-mix(in srgb,var(--leaf) 16%,transparent);color:var(--leaf)}
-.chip.cat{background:color-mix(in srgb,var(--cc) 15%,transparent);color:var(--cc)}
-.c-content{--cc:var(--c-content)}.c-khach{--cc:var(--c-khach)}.c-hoc{--cc:var(--c-hoc)}.c-nha{--cc:var(--c-nha)}.c-khac{--cc:var(--c-khac)}.c-tuonglai{--cc:var(--c-tuonglai)}
+.chip.cat{background:var(--pp);color:#1F2B25}
+.c-content{--pp:#F7BBA4;--cc:#A0472B}.c-khach{--pp:#A7C7E7;--cc:#2F5F8F}.c-hoc{--pp:#B9B9FF;--cc:#4646B0}.c-tuonglai{--pp:#B3E2D7;--cc:#22705C}.c-nha{--pp:#FFEE99;--cc:#7A6200}.c-khac{--pp:#FFD9A8;--cc:#8A5A14}
 .empty{color:var(--muted);padding:6px 0}
 .sec{margin-top:4px}
 .sec h3{display:flex;justify-content:space-between;gap:8px}
@@ -307,7 +307,7 @@ body{background:radial-gradient(60% 40% at 85% -5%,color-mix(in srgb,var(--leaf)
 
 /* ---- Lock in ---- */
 #v-arc,.tabs [data-t=arc]{--sec:var(--s-arc)}
-.k-arc{--bc:var(--s-arc)}
+.k-arc{--pb:#FFB3B3;--pd:#B33A3A}
 .blk.rest{opacity:.8}
 .arc-count{background:color-mix(in srgb,var(--s-arc) 9%,var(--surface))}
 .arc-num{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
@@ -352,14 +352,14 @@ body{background:radial-gradient(60% 40% at 85% -5%,color-mix(in srgb,var(--leaf)
 .tt-gut span{position:absolute;right:6px;transform:translateY(-50%);font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
 .tt-col{position:relative;height:var(--H);border-left:1px solid var(--line);background:repeating-linear-gradient(to bottom,var(--line) 0 1px,transparent 1px var(--hp))}
 .tt-col.today{background-color:color-mix(in srgb,var(--sec) 7%,transparent)}
-.blk{position:absolute;overflow:hidden;text-align:left;border:0;border-left:3px solid var(--bc);border-radius:6px;padding:2px 5px;background:color-mix(in srgb,var(--bc) 20%,var(--surface));font-size:11px;line-height:1.25;display:flex;flex-direction:column;color:var(--ink)}
+.blk{position:absolute;overflow:hidden;text-align:left;border:0;border-left:4px solid var(--pd);border-radius:6px;padding:2px 5px;background:var(--pb);font-size:11px;line-height:1.25;display:flex;flex-direction:column;color:var(--ink)}
 .blk b{font-weight:600;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.blk span{color:var(--muted);white-space:nowrap}
-.k-course{--bc:var(--s-hoc)}.k-study{--bc:var(--s-week)}.k-work{--bc:var(--muted)}.k-other{--bc:var(--s-pri)}.kt{--bc:var(--cc)}
-.blk.try{border-left-style:dashed;background-image:repeating-linear-gradient(135deg,transparent 0 5px,color-mix(in srgb,var(--bc) 18%,transparent) 5px 10px)}
+.blk{color:#1F2B25}.blk span{color:rgba(20,30,25,.68);white-space:nowrap}
+.k-course{--pb:#D9C8F5;--pd:#6A3FA8}.k-study{--pb:#D9F0B4;--pd:#4F7A1C}.k-work{--pb:#E8DCCB;--pd:#6B5A43}.k-other{--pb:#F5C2E0;--pd:#A33A78}.kt{--pb:var(--pp);--pd:var(--cc)}
+.blk.try{border-left-style:dashed;background-image:repeating-linear-gradient(135deg,transparent 0 5px,color-mix(in srgb,var(--pd) 16%,transparent) 5px 10px)}
 .blk.bad{box-shadow:0 0 0 2px var(--bad);z-index:2}
 .legend{display:flex;gap:6px 14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-bottom:10px}
-.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--bc);margin-right:6px;vertical-align:-1px}
+.legend span::before{content:"";display:inline-block;width:12px;height:12px;border-radius:4px;background:var(--pb,var(--bc));border:1px solid var(--pd,transparent);box-sizing:border-box;margin-right:6px;vertical-align:-1px}
 .tt-hint{display:none;margin-top:8px}
 @media (max-width:860px){.tt-hint{display:block}}
 .check{padding:10px 12px;border-radius:10px;font-size:13px}
@@ -430,6 +430,46 @@ input[type=datetime-local]{width:100%;min-height:42px;padding:8px 10px;border:1p
 .code{font-family:var(--font-mono);font-size:17px;letter-spacing:.06em;background:var(--surface2);border-radius:8px;padding:8px 12px;display:inline-block;user-select:all;-webkit-user-select:all}
 .sheet h3{margin:16px 0 6px}
 .guide{margin:8px 0 0;padding-left:20px;display:grid;gap:6px}
+/* ---------- Quản lý nội dung ---------- */
+.cstats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media (min-width:720px){.cstats{grid-template-columns:repeat(4,1fr)}}
+.cst{background:var(--surface2);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:2px}
+.cst b{font-family:var(--font-display);font-size:28px;line-height:1.1}
+.cst span{font-size:13px;color:var(--muted)}
+.cst.bad{background:var(--warn-bg)}.cst.bad b{color:var(--warn)}
+.pprog{display:grid;grid-template-columns:minmax(110px,180px) 1fr auto;gap:10px;align-items:center;padding:6px 0}
+.pname{border:0;background:none;padding:0;text-align:left;font-weight:600;display:flex;align-items:center;gap:8px;overflow-wrap:anywhere}
+.pname::before,.pdot{content:"";flex:0 0 auto;width:12px;height:12px;border-radius:4px;background:var(--pp);border:1px solid var(--pd)}
+.pdot{margin-top:5px;display:inline-block}
+.pbar{height:10px;border-radius:99px;background:var(--surface2);overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--pp);border-right:2px solid var(--pd)}
+.chip.pj{background:var(--pp);color:#1F2B25}
+.wf .pjb{background:color-mix(in srgb,var(--pp) 55%,var(--surface));border-color:var(--pd);color:var(--ink)}
+.wf .pjb[aria-pressed="true"]{background:var(--pp);color:#1F2B25;border-color:var(--pd);box-shadow:0 0 0 2px var(--pd) inset}
+.form.three{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.card.pc{border-left:5px solid var(--pp)}
+.card.pc .ttl{font-weight:600}
+@media (min-width:1040px){.kan{grid-template-columns:repeat(3,1fr)}}
+.k0{--sec:#9AA59F}.k1{--sec:#6F8FD8}.k2{--sec:#E08A5B}.k3{--sec:#C068A8}.k4{--sec:#3E9BB5}.k5{--sec:#3F9A70}
+.st0{background:#E6EBE8;color:#33403A}.st1{background:#D5E0FA;color:#2B3F7A}.st2{background:#FFD9C2;color:#7A3410}.st3{background:#F5D0EA;color:#7A2560}.st4{background:#CDEAF2;color:#14566A}.st5{background:#CDEBD9;color:#1D5C3C}
+.mgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin-top:12px}
+.mh{font-size:12px;font-weight:600;color:var(--muted);text-align:center;padding:4px 0}
+.mc{min-height:96px;border:1px solid var(--line);border-radius:10px;padding:4px;display:flex;flex-direction:column;gap:3px;background:var(--surface);cursor:pointer;min-width:0}
+.mc:hover{border-color:var(--sec)}
+.mc.out{opacity:.45}
+.mc.today{border:2px solid var(--sec)}
+.mn{font-size:12px;font-weight:600;color:var(--muted)}
+.mp{border:0;border-left:3px solid var(--pd);background:var(--pp);color:#1F2B25;border-radius:5px;padding:1px 5px;font-size:11px;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:20px}
+.mp.done{opacity:.55;text-decoration:line-through}
+.more{font-size:11px;color:var(--muted)}
+@media (max-width:600px){.mc{min-height:62px;padding:3px}.mp{font-size:0;min-height:8px;height:8px;padding:0;border-left-width:0;border-radius:4px}.more{font-size:10px}}
+.sheet textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);resize:vertical;line-height:1.5}
+input[type=url]{width:100%;min-height:42px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink)}
+.sw{display:flex;flex-wrap:wrap;gap:8px}
+.sw label{display:flex;align-items:center;gap:6px;font-size:13px;border:1px solid var(--line);border-radius:999px;padding:4px 10px 4px 4px;cursor:pointer}
+.sw input{position:absolute;opacity:0;pointer-events:none}
+.sw span{width:22px;height:22px;border-radius:50%;border:2px solid}
+.sw label:has(input:checked){border-color:var(--ink);font-weight:600;box-shadow:0 0 0 1px var(--ink) inset}
 </style>
 </head>
 <body>
@@ -505,8 +545,8 @@ var WD=['Chủ nhật','Thứ 2','Thứ 3','Thứ 4','Thứ 5','Thứ 6','Thứ 
 var WDs=['CN','T2','T3','T4','T5','T6','T7'];
 var CAT={content:'Content',khach:'Khách',hoc:'Học',tuonglai:'Tương lai',nha:'Nhà & cá nhân',khac:'Khác'};
 var DUR0={content:90,khach:30,hoc:60,tuonglai:60,nha:45,khac:45};
-var STAT=['Ý tưởng','Đang viết','Chờ đăng','Đã đăng'];
-var PLAT=['Facebook','TikTok','Zalo','Instagram'];
+var STAT=['Ý tưởng','Viết bài','Sản xuất','Chờ duyệt','Lên lịch','Đã đăng'];
+var PLAT=['Facebook','TikTok','Instagram','Zalo','YouTube','Threads','Website'];
 var TODAY=ymd(new Date());
 var nowMin=function(){var n=new Date();return n.getHours()*60+n.getMinutes()};
 var dLabel=function(s){var d=pYmd(s);return WD[d.getDay()]+', '+pad(d.getDate())+'/'+pad(d.getMonth()+1)};
@@ -560,6 +600,9 @@ function fix(s){
   s.arc.log=s.arc.log||{};s.arc.subjects=s.arc.subjects||['','',''];
   s.learn=s.learn||[];
   s.tasks=s.tasks||[];s.habits=s.habits||[];s.habitLog=s.habitLog||{};s.posts=s.posts||[];
+  if(!s.projects||!s.projects.length)s.projects=[{id:'p-spa',name:'Minh Thư Spa',color:'dao'},{id:'p-me',name:'Kênh của Thảo',color:'tim'}];
+  if(!s.postV){s.posts.forEach(function(p){p.status=[0,1,4,5][p.status]||0});s.postV=2}
+  s.posts.forEach(function(p){if(!s.projects.some(function(x){return x.id===p.proj}))p.proj=s.projects[0].id;if(!p.plat)p.plat='Facebook'});
   return s;
 }
 S=fix(loadLocal()||seed());
@@ -803,7 +846,7 @@ function renderToday(){
   var posts=S.posts.filter(function(p){return p.date===d});
   if(posts.length){
     h+='<div class="panel"><h3>Bài cần đăng</h3>';
-    posts.forEach(function(p){h+='<div class="row"><div class="body"><span class="ttl">'+esc(p.idea)+'</span><div class="meta"><span class="chip cat c-content">'+esc(p.plat)+'</span><span class="chip">'+STAT[p.status]+'</span></div></div></div>'});
+    posts.forEach(function(p){h+='<div class="row"><div class="body"><span class="ttl">'+esc(p.idea)+'</span><div class="meta">'+pchip(projOf(p.proj))+'<span class="chip">'+esc(p.plat)+'</span><span class="chip">'+STAT[p.status]+'</span></div></div></div>'});
     h+='</div>';
   }
   var wd=pYmd(d).getDay();
@@ -864,38 +907,14 @@ function renderMatrix(){
   $('#v-uu-tien').innerHTML=hero('uu-tien')+h;
 }
 
-function renderContent(){
-  var w=mondayOf(TODAY),days=[];
-  for(var i=0;i<6;i++){var dd=addDays(w,i);if(!S.posts.some(function(p){return p.date===dd}))days.push(WDs[pYmd(dd).getDay()])}
-  var cnt=S.posts.filter(function(p){return p.date>=w&&p.date<=addDays(w,6)}).length;
-  var h='<div class="panel"><h3>Thêm ý tưởng bài</h3><p class="muted small" style="margin:0 0 12px">Tuần này đã lên lịch '+cnt+' bài.'+(days.length&&days.length<6?' Chưa có bài vào: <b>'+days.join(', ')+'</b>.':'')+'</p>'+
-    '<div class="form two"><label class="f">Ý tưởng bài<input type="text" id="pIdea" placeholder="Ví dụ: Mẹo giữ ẩm da mùa khô"></label>'+
-    '<label class="f">Kênh<select id="pPlat">'+PLAT.map(function(p){return '<option>'+p+'</option>'}).join('')+'</select></label>'+
-    '<label class="f">Ngày đăng (không bắt buộc)<input type="date" id="pDate"></label>'+
-    '<div style="display:flex;align-items:flex-end"><button class="btn primary" data-a="postadd" style="width:100%">Thêm bài</button></div></div></div>';
-  h+='<div class="kan">';
-  STAT.forEach(function(s,si){
-    var list=S.posts.filter(function(p){return p.status===si}).sort(function(a,b){return (a.date||'9').localeCompare(b.date||'9')});
-    h+='<div class="panel k'+si+'"><h3>'+s+' <span class="muted small">'+list.length+'</span></h3>';
-    if(!list.length)h+='<p class="empty small">Chưa có</p>';
-    list.forEach(function(p){
-      h+='<div class="card"><p>'+esc(p.idea)+'</p><div class="meta"><span class="chip cat c-content">'+esc(p.plat)+'</span>'+(p.date?'<span>'+dLabel(p.date)+'</span>':'<span>Chưa có ngày</span>')+'</div>'+
-        '<div class="acts"><span>'+(si>0?'<button class="btn sm" data-a="postmove" data-id="'+p.id+'" data-dir="-1" aria-label="Lùi lại">‹</button>':'')+(si<3?' <button class="btn sm" data-a="postmove" data-id="'+p.id+'" data-dir="1" aria-label="Chuyển tiếp">›</button>':'')+'</span>'+
-        '<button class="btn sm ghost" data-a="postdel" data-id="'+p.id+'">Xóa</button></div></div>';
-    });
-    h+='</div>';
-  });
-  h+='</div>';
-  var keep=$('#pIdea')?$('#pIdea').value:'';
-  $('#v-content').innerHTML=hero('content')+h;
-  if(keep)$('#pIdea').value=keep;
-}
-
 /* ---------- Thời khóa biểu: lịch cố định, khóa học, tự học ---------- */
 var PRI=['Cao','Vừa','Thấp'];
 var hh=function(m){return (Math.round(m/6)/10).toString().replace('.',',')+' giờ'};
 var KIND={course:'Khóa học',work:'Giờ làm cố định',other:'Việc cố định khác',arc:'Lock in'};
 var WIN={sang:['Buổi sáng',480,690],chieu:['Buổi chiều',810,1050],toi:['Buổi tối',1080,1320],ngay:['Cả ngày',360,1320]};
+/* Khung giờ học lấy theo giờ làm việc trong Cài đặt */
+function winSync(){var ds=S.settings.start*60,de=S.settings.end*60;WIN.sang[1]=Math.min(ds,690);WIN.sang[2]=Math.min(690,de);WIN.chieu[1]=810;WIN.chieu[2]=Math.min(1050,de);WIN.toi[1]=1080;WIN.toi[2]=Math.max(WIN.toi[1],de);WIN.ngay[1]=ds;WIN.ngay[2]=de;G0=Math.min(360,Math.floor(ds/60)*60);G1=Math.max(1380,Math.ceil(de/60)*60)}
+var winText=function(){winSync();var f=function(k){return WIN[k][2]>WIN[k][1]?fromMin(WIN[k][1])+' đến '+fromMin(WIN[k][2]):'không có giờ trống'};return 'Theo giờ làm việc '+S.settings.start+'h đến '+S.settings.end+'h trong Cài đặt: buổi sáng từ '+f('sang')+', chiều từ '+f('chieu')+', tối từ '+f('toi')+'.'};
 var G0=360,G1=1380,HPX=46;
 var DORD=[1,2,3,4,5,6,0];
 V.sub='tkb';V.tkb=mondayOf(TODAY);
@@ -980,6 +999,7 @@ function freeWeek(){
 
 /* Xếp khung giờ tự học cố định theo tuần, đúng buổi và đúng thứ chị muốn */
 function placeStudy(onlyId){
+  winSync();
   var targets=S.learn.slice().sort(function(a,b){return a.pri-b.pri});
   if(onlyId)targets=targets.filter(function(x){return x.id===onlyId});
   targets.forEach(function(x){x.slots=[]});
@@ -1067,7 +1087,7 @@ function renderTkb(){
     var busy=an.days.reduce(function(s,d){return s+d.total},0);
     h+='<div class="panel"><div class="head"><h3 style="margin:0">Bảng theo thứ, giờ và ngày</h3><div class="nav"><button class="btn sm" data-a="tkbprev" aria-label="Tuần trước">‹</button><button class="btn sm" data-a="tkbtoday">Tuần này</button><button class="btn sm" data-a="tkbnext" aria-label="Tuần sau">›</button></div></div>'+
       '<p class="small muted" style="margin:6px 0 10px">Cả tuần có khoảng '+hh(busy)+' lịch. Bấm vào một ô để xem hoặc sửa. Ô gạch chéo là lịch đang thử, ô viền đỏ là bị trùng giờ.</p>'+
-      '<div class="legend"><span class="k-course">Khóa học</span><span class="k-study">Tự học</span><span class="k-work">Giờ làm cố định</span><span class="k-other">Việc cố định khác</span><span class="kt c-content">Việc theo ngày</span></div>'+
+      '<div class="legend"><span class="k-course">Khóa học</span><span class="k-study">Tự học</span><span class="k-work">Giờ làm cố định</span><span class="k-other">Việc cố định khác</span><span class="k-arc">Lock in</span></div><div class="legend"><b style="color:var(--ink)">Việc theo ngày:</b>'+Object.keys(CAT).map(function(k){return '<span class="kt c-'+k+'">'+CAT[k]+'</span>'}).join('')+'</div>'+
       '<div class="actions" style="margin:0 0 10px"><button class="btn sm" data-a="fixednew">+ Thêm lịch cố định</button><button class="btn sm" data-a="tkbplace">Xếp tự động tự học và việc khác</button></div>'+
       gridHtml(an)+'<p class="small muted tt-hint">Trên điện thoại, chị vuốt ngang để xem các ngày.</p></div>';
   }
@@ -1130,7 +1150,7 @@ function learnForm(id){
     '<label class="f">Học vào buổi nào<select id="lWin">'+Object.keys(WIN).map(function(k){return '<option value="'+k+'"'+(k===(x.win||'ngay')?' selected':'')+'>'+WIN[k][0]+'</option>'}).join('')+'</select></label>'+
     '<label class="f">Độ ưu tiên<select id="lPri">'+PRI.map(function(p,i){return '<option value="'+i+'"'+(i===x.pri?' selected':'')+'>'+p+'</option>'}).join('')+'</select></label></div>'+
     '<div><p class="small muted" style="margin-bottom:6px">Có thể học vào các thứ</p><div class="days">'+DORD.map(function(n){return '<label><input type="checkbox" class="ld" value="'+n+'"'+(days.indexOf(n)>-1?' checked':'')+'>'+WDs[n]+'</label>'}).join('')+'</div></div>'+
-    '<p class="small muted">Buổi sáng từ 8:00 đến 11:30, chiều từ 13:30 đến 17:30, tối từ 18:00 đến 22:00. Ứng dụng tự chọn giờ trống trong buổi đó, tránh giờ nghỉ trưa và lịch cố định.</p>'+
+    '<p class="small muted">'+winText()+' Ứng dụng tự chọn giờ trống trong buổi đó, tránh giờ nghỉ trưa và lịch cố định.</p>'+
     '<div class="actions"><button class="btn primary" data-a="savelearn" data-id="'+(id||'')+'">Lưu và xếp giờ</button><button class="btn" data-a="close">Hủy</button>'+(id?'<button class="btn danger" data-a="dellearn" data-id="'+id+'" style="margin-left:auto">Xóa</button>':'')+'</div></div>');
   setTimeout(function(){var e=$('#lTitle');if(e)e.focus()},30);
 }
@@ -1349,7 +1369,7 @@ var HOME=[
   {k:'hoc',t:'Thời khóa biểu',d:'Lịch học, khóa học, tự học và cảnh báo trùng.'},
   {k:'arc',t:'Lock in',d:'Đếm ngược đến Tết, nhịp ngủ và học mỗi ngày.'}
 ];
-var EYE={gom:'Đổ ý nghĩ → thành việc','hom-nay':'Lịch trong ngày',tuan:'Bảng 7 ngày','uu-tien':'Gấp · Quan trọng',content:'Kế hoạch bài đăng',hoc:'Thời khóa biểu · Tự học',arc:'Winter arc · Đến Tết'};
+var EYE={gom:'Đổ ý nghĩ → thành việc','hom-nay':'Lịch trong ngày',tuan:'Bảng 7 ngày','uu-tien':'Gấp · Quan trọng',content:'Nhiều dự án · Lịch đăng',hoc:'Thời khóa biểu · Tự học',arc:'Winter arc · Đến Tết'};
 var SCN={
   'hom-nay':{sky:['#FFE9A8','#FFB45C','#3B7A6E'],sun:[210,150,38,'#FFF4CF'],hills:['#6DAF8A','#3F8F6B','#1F5A41'],glow:['#B7742A','#1F5A41']},
   gom:{sky:['#FFD9E3','#F5A3BE','#6A4A80'],sun:[220,120,30,'#FFF0D2'],hills:['#9A6C95','#6A4A80','#2E2145'],glow:['#9A4A78','#2E2145']},
@@ -1432,7 +1452,7 @@ function homeStats(k){
   }
   if(k==='content'){
     var w=mondayOf(TODAY),wk=S.posts.filter(function(p){return p.date>=w&&p.date<=addDays(w,6)}).length;
-    return [['Bài tuần này',wk],['Ý tưởng',S.posts.filter(function(p){return p.status===0}).length],['Chờ đăng',S.posts.filter(function(p){return p.status===2}).length]];
+    return [['Bài tuần này',wk],['Bài trễ hạn',S.posts.filter(isLate).length],['Chờ duyệt',S.posts.filter(function(p){return p.status===3}).length]];
   }
   if(k==='hoc'){
     an=analyzeWeek(mondayOf(TODAY));
@@ -1894,6 +1914,221 @@ function remInit(){
   setTimeout(function(){hubPull().then(function(){tick();hubSub()})},700);
 }
 
+/* ---------- Quản lý nội dung: dự án, lịch đăng, quy trình, bảng số liệu ---------- */
+var FMT=['Bài viết','Ảnh đơn','Album, carousel','Video ngắn','Video dài','Livestream','Story'];
+var PAL={dao:['#F7BBA4','#A0472B','Đào'],troi:['#A7C7E7','#2F5F8F','Xanh trời'],tim:['#B9B9FF','#4646B0','Tím nhạt'],bh:['#B3E2D7','#22705C','Bạc hà'],bo:['#FFEE99','#7A6200','Vàng bơ'],mo:['#FFD9A8','#8A5A14','Mơ'],hong:['#F5C2E0','#A33A78','Hồng'],san:['#FFB3B3','#B33A3A','San hô'],bien:['#CDE7FB','#2C6E9E','Xanh biển nhạt']};
+V.ct={view:'board',cal:'month',proj:'all',plat:'',stat:'',own:'',ref:TODAY};
+var CV={board:'Tiến độ',cal:'Lịch đăng',list:'Danh sách'};
+function projOf(id){return S.projects.filter(function(p){return p.id===id})[0]||S.projects[0]}
+function pcs(p){var c=PAL[(p&&p.color)||'dao']||PAL.dao;return '--pp:'+c[0]+';--pd:'+c[1]}
+function pchip(p){return '<span class="chip pj" style="'+pcs(p)+'">'+esc(p?p.name:'')+'</span>'}
+function owners(){var o={};S.posts.forEach(function(p){if(p.owner)o[p.owner]=1});return Object.keys(o).sort()}
+function postsF(skipStat){
+  var c=V.ct;
+  return S.posts.filter(function(p){
+    return (c.proj==='all'||p.proj===c.proj)&&(!c.plat||p.plat===c.plat)&&(skipStat||c.stat===''||p.status===+c.stat)&&(!c.own||(p.owner||'')===c.own);
+  });
+}
+var pKey=function(p){return (p.date||'9999')+(p.time||'99')};
+function isLate(p){return p.status<5&&p.date&&(p.date<TODAY||(p.date===TODAY&&p.time&&toMin(p.time)<nowMin()))}
+function pmeta(p,noProj){
+  return (noProj?'':pchip(projOf(p.proj)))+'<span class="chip">'+esc(p.plat)+'</span>'+(p.fmt?'<span class="chip">'+esc(p.fmt)+'</span>':'')+
+    (p.date?'<span>'+dLabel(p.date)+(p.time?' · '+hLabel2(p.time):'')+'</span>':'<span>Chưa có ngày</span>')+(p.owner?'<span>'+esc(p.owner)+'</span>':'')+
+    (isLate(p)?'<span class="chip hot">Trễ hạn</span>':'');
+}
+function hLabel2(t){var a=t.split(':');return (+a[0])+'h'+(a[1]==='00'?'':a[1])}
+
+function ctDash(){
+  var all=S.posts.filter(function(p){return V.ct.proj==='all'||p.proj===V.ct.proj});
+  var m0=TODAY.slice(0,8)+'01',m1=TODAY.slice(0,8)+'31',w7=addDays(TODAY,6);
+  var soon=all.filter(function(p){return p.status<5&&p.date&&p.date>=TODAY&&p.date<=w7&&!isLate(p)}).length;
+  var late=all.filter(isLate).length;
+  var posted=all.filter(function(p){return p.status===5&&p.date&&p.date>=m0&&p.date<=m1}).length;
+  var h='<div class="panel"><div class="cstats">'+
+    '<div class="cst"><b>'+all.length+'</b><span>Tổng số bài</span></div>'+
+    '<div class="cst"><b>'+soon+'</b><span>Sắp đăng trong 7 ngày</span></div>'+
+    '<div class="cst'+(late?' bad':'')+'"><b>'+late+'</b><span>Bài trễ hạn</span></div>'+
+    '<div class="cst"><b>'+posted+'</b><span>Đã đăng tháng này</span></div></div>';
+  h+='<h3 style="margin-top:16px">Tiến độ từng dự án tháng '+(+TODAY.slice(5,7))+'</h3>';
+  S.projects.forEach(function(pr){
+    var ps=S.posts.filter(function(p){return p.proj===pr.id&&p.date&&p.date>=m0&&p.date<=m1}),dn=ps.filter(function(p){return p.status===5}).length,pct=ps.length?Math.round(dn/ps.length*100):0;
+    var lt=S.posts.filter(function(p){return p.proj===pr.id&&isLate(p)}).length;
+    h+='<div class="pprog" style="'+pcs(pr)+'"><button class="pname" data-a="ctproj" data-p="'+pr.id+'">'+esc(pr.name)+'</button><div class="pbar"><i style="width:'+pct+'%"></i></div><span class="small muted">'+dn+'/'+ps.length+' bài'+(lt?' · <b style="color:var(--warn)">'+lt+' trễ</b>':'')+'</span></div>';
+  });
+  return h+'</div>';
+}
+function ctControls(){
+  var c=V.ct,sel=function(id,label,opts,val){return '<label class="f">'+label+'<select id="'+id+'" data-ct="'+id+'"><option value="">Tất cả</option>'+opts.map(function(o){return '<option value="'+esc(o[0])+'"'+(String(val)===String(o[0])?' selected':'')+'>'+esc(o[1])+'</option>'}).join('')+'</select></label>'};
+  var h='<div class="panel"><div class="head"><h3 style="margin:0">Dự án</h3><button class="btn sm" data-a="projnew">+ Dự án mới</button></div>';
+  h+='<div class="wf" style="margin-top:10px"><button data-a="ctproj" data-p="all" aria-pressed="'+(c.proj==='all')+'">Tất cả '+S.posts.length+'</button>'+
+    S.projects.map(function(p){return '<button class="pjb" style="'+pcs(p)+'" data-a="ctproj" data-p="'+p.id+'" aria-pressed="'+(c.proj===p.id)+'">'+esc(p.name)+' '+S.posts.filter(function(x){return x.proj===p.id}).length+'</button>'}).join('')+
+    (c.proj!=='all'?'<button data-a="projedit" data-id="'+c.proj+'">Sửa dự án</button>':'')+'</div>';
+  var ow=owners();
+  h+='<div class="form three" style="margin-top:6px">'+sel('fPlat','Nền tảng',PLAT.map(function(p){return [p,p]}),c.plat)+sel('fStat','Trạng thái',STAT.map(function(s,i){return [i,s]}),c.stat)+
+    (ow.length?sel('fOwn','Người phụ trách',ow.map(function(o){return [o,o]}),c.own):'')+'</div>';
+  h+='<div class="wq"><input type="text" id="pIdea" placeholder="Ý tưởng bài mới, ví dụ: Mẹo giữ ẩm da mùa khô" autocomplete="off" aria-label="Ý tưởng bài mới"><button class="btn primary" data-a="postadd">Thêm</button><button class="btn" data-a="postnew">Bài đầy đủ</button></div>';
+  h+='<div class="seg" role="group" aria-label="Cách xem">'+Object.keys(CV).map(function(k){return '<button data-a="ctview" data-v="'+k+'" aria-current="'+(c.view===k)+'">'+CV[k]+'</button>'}).join('')+'</div>';
+  return h+'</div>';
+}
+function pcard(p){
+  return '<div class="card pc" style="'+pcs(projOf(p.proj))+'"><button class="ttl" data-a="postedit" data-id="'+p.id+'">'+esc(p.idea)+'</button><div class="meta">'+pmeta(p)+'</div>'+
+    '<div class="acts"><span>'+(p.status>0?'<button class="btn sm" data-a="postmove" data-id="'+p.id+'" data-dir="-1" aria-label="Lùi một bước">‹</button>':'')+(p.status<5?' <button class="btn sm" data-a="postmove" data-id="'+p.id+'" data-dir="1">'+STAT[p.status+1]+' ›</button>':'')+'</span></div></div>';
+}
+function ctBoard(){
+  var ps=postsF(true),h='<div class="kan">';
+  STAT.forEach(function(s,si){
+    if(V.ct.stat!==''&&+V.ct.stat!==si)return;
+    var list=ps.filter(function(p){return p.status===si}).sort(function(a,b){return pKey(a).localeCompare(pKey(b))});
+    h+='<div class="panel k'+si+'"><h3>'+(si+1)+'. '+s+' <span class="muted small">'+list.length+'</span></h3>';
+    if(!list.length)h+='<p class="empty small">Chưa có</p>';
+    list.forEach(function(p){h+=pcard(p)});
+    h+='</div>';
+  });
+  return h+'</div>';
+}
+function ctList(){
+  var ps=postsF().sort(function(a,b){return pKey(a).localeCompare(pKey(b))});
+  var h='<div class="panel"><div class="head"><h3 style="margin:0">'+ps.length+' bài</h3></div>';
+  if(!ps.length)h+='<p class="empty">Không có bài nào khớp bộ lọc.</p>';
+  ps.forEach(function(p){
+    h+='<div class="row"><span class="pdot" style="'+pcs(projOf(p.proj))+'"></span><div class="body"><button class="ttl" data-a="postedit" data-id="'+p.id+'">'+esc(p.idea)+'</button><div class="meta"><span class="chip st'+p.status+'">'+STAT[p.status]+'</span>'+pmeta(p)+'</div></div></div>';
+  });
+  return h+'</div>';
+}
+function ctCal(){
+  var c=V.ct,ref=c.ref,ps=postsF(),by={};
+  ps.forEach(function(p){if(p.date)(by[p.date]=by[p.date]||[]).push(p)});
+  Object.keys(by).forEach(function(k){by[k].sort(function(a,b){return pKey(a).localeCompare(pKey(b))})});
+  var d0=pYmd(ref),label;
+  if(c.cal==='month')label='Tháng '+(d0.getMonth()+1)+'/'+d0.getFullYear();
+  else if(c.cal==='week'){var w=mondayOf(ref);label=dLabel(w).split(', ')[1]+' – '+dLabel(addDays(w,6)).split(', ')[1]}
+  else label=dLabel(ref);
+  var h='<div class="panel"><div class="head"><h2>'+label+'</h2><div class="nav"><button class="btn sm" data-a="calnav" data-dir="-1" aria-label="Trước">‹</button><button class="btn sm" data-a="calnav" data-dir="0">Hôm nay</button><button class="btn sm" data-a="calnav" data-dir="1" aria-label="Sau">›</button></div></div>'+
+    '<div class="seg" style="margin-top:10px">'+[['month','Tháng'],['week','Tuần'],['day','Ngày']].map(function(x){return '<button data-a="calmode" data-m="'+x[0]+'" aria-current="'+(c.cal===x[0])+'">'+x[1]+'</button>'}).join('')+'</div>';
+  var pill=function(p){return '<button class="mp'+(p.status===5?' done':'')+'" style="'+pcs(projOf(p.proj))+'" data-a="postedit" data-id="'+p.id+'" title="'+esc(p.idea)+'">'+(p.time?hLabel2(p.time)+' ':'')+esc(p.idea)+'</button>'};
+  if(c.cal==='month'){
+    var first=ref.slice(0,8)+'01',start=mondayOf(first),mon=first.slice(0,7);
+    h+='<div class="mgrid"><div class="mh">T2</div><div class="mh">T3</div><div class="mh">T4</div><div class="mh">T5</div><div class="mh">T6</div><div class="mh">T7</div><div class="mh">CN</div>';
+    for(var i=0;i<42;i++){
+      var d=addDays(start,i);if(i===35&&d.slice(0,7)!==mon)break;
+      var its=by[d]||[];
+      h+='<div class="mc'+(d.slice(0,7)!==mon?' out':'')+(d===TODAY?' today':'')+'" data-a="calday" data-d="'+d+'"><span class="mn">'+(+d.slice(8))+'</span>'+its.slice(0,3).map(pill).join('')+(its.length>3?'<span class="more">+'+(its.length-3)+' bài</span>':'')+'</div>';
+    }
+    h+='</div><p class="small muted" style="margin-top:8px">Bấm vào một ngày để xem chi tiết và thêm bài cho ngày đó.</p>';
+  }else{
+    var days=c.cal==='week'?[0,1,2,3,4,5,6].map(function(k){return addDays(mondayOf(ref),k)}):[ref];
+    h+='<div class="'+(c.cal==='week'?'grid7':'')+'" style="margin-top:12px">';
+    days.forEach(function(d){
+      var its=by[d]||[];
+      h+='<div class="panel day'+(d===TODAY?' today':'')+'"><div class="head"><b>'+dLabel(d)+'</b><button class="btn sm" data-a="postnew" data-date="'+d+'">+ Bài</button></div>';
+      if(!its.length)h+='<p class="small muted">Chưa có bài</p>';
+      its.forEach(function(p){h+='<div class="row"><span class="pdot" style="'+pcs(projOf(p.proj))+'"></span><div class="body"><button class="ttl" data-a="postedit" data-id="'+p.id+'">'+esc(p.idea)+'</button><div class="meta"><span class="chip st'+p.status+'">'+STAT[p.status]+'</span>'+pmeta(p)+'</div></div></div>'});
+      h+='</div>';
+    });
+    h+='</div>';
+    var nod=ps.filter(function(p){return !p.date&&p.status<5});
+    if(nod.length)h+='<p class="small muted" style="margin-top:8px">Còn '+nod.length+' bài chưa có ngày đăng. Xem ở cách xem "Danh sách" hoặc "Tiến độ".</p>';
+  }
+  return h+'</div>';
+}
+function renderContent(){
+  var keep=$('#pIdea')?$('#pIdea').value:'';
+  var c=V.ct;if(c.proj!=='all'&&!S.projects.some(function(p){return p.id===c.proj}))c.proj='all';
+  var h=ctDash()+ctControls()+(c.view==='board'?ctBoard():c.view==='cal'?ctCal():ctList());
+  $('#v-content').innerHTML=hero('content')+h;
+  if(keep)$('#pIdea').value=keep;
+}
+function postForm(id,preset){
+  var p=id?S.posts.filter(function(x){return x.id===id})[0]:Object.assign({idea:'',proj:V.ct.proj!=='all'?V.ct.proj:S.projects[0].id,plat:'Facebook',fmt:'Bài viết',status:0,date:'',time:'',owner:'Tôi',caption:'',body:'',link:'',note:''},preset||{});
+  if(!p)return;
+  var opt=function(list,val,useIdx){return list.map(function(o,i){var v=useIdx?i:o;return '<option value="'+esc(v)+'"'+(String(v)===String(val)?' selected':'')+'>'+esc(o)+'</option>'}).join('')};
+  var link=/^https?:\/\//i.test(p.link||'')?'<a class="small" href="'+esc(p.link)+'" target="_blank" rel="noopener">Mở tài liệu</a>':'';
+  sheet('<h2>'+(id?'Sửa bài':'Bài mới')+'</h2><div class="form">'+
+    '<label class="f">Tiêu đề hoặc ý tưởng<input type="text" id="qTitle" value="'+esc(p.idea)+'" autocomplete="off"></label>'+
+    '<div class="form two"><label class="f">Dự án<select id="qProj">'+S.projects.map(function(x){return '<option value="'+x.id+'"'+(x.id===p.proj?' selected':'')+'>'+esc(x.name)+'</option>'}).join('')+'</select></label>'+
+    '<label class="f">Trạng thái<select id="qStat">'+opt(STAT,p.status,true)+'</select></label>'+
+    '<label class="f">Nền tảng<select id="qPlat">'+opt(PLAT.indexOf(p.plat)<0?PLAT.concat([p.plat]):PLAT,p.plat)+'</select></label>'+
+    '<label class="f">Định dạng<select id="qFmt">'+opt(FMT,p.fmt||'Bài viết')+'</select></label>'+
+    '<label class="f">Ngày đăng<input type="date" id="qDate" value="'+(p.date||'')+'"></label>'+
+    '<label class="f">Giờ đăng<input type="time" id="qTime" value="'+(p.time||'')+'"></label></div>'+
+    '<label class="f">Người phụ trách<input type="text" id="qOwn" value="'+esc(p.owner||'')+'" list="ownList" autocomplete="off"><datalist id="ownList">'+owners().map(function(o){return '<option value="'+esc(o)+'">'}).join('')+'</datalist></label>'+
+    '<label class="f">Caption<textarea id="qCap" rows="4">'+esc(p.caption||'')+'</textarea></label>'+
+    '<label class="f">Nội dung, kịch bản<textarea id="qBody" rows="5">'+esc(p.body||'')+'</textarea></label>'+
+    '<label class="f">Link tài liệu (Drive, Canva, ảnh, video)<input type="url" id="qLink" value="'+esc(p.link||'')+'" placeholder="https://"></label>'+link+
+    '<label class="f">Ghi chú<textarea id="qNote" rows="2">'+esc(p.note||'')+'</textarea></label>'+
+    '<div class="actions"><button class="btn primary" data-a="postsave" data-id="'+(id||'')+'">Lưu</button><button class="btn" data-a="close">Hủy</button>'+
+    '<button class="btn" data-a="capcopy">Sao chép caption</button>'+(id?'<button class="btn danger" data-a="postdel" data-id="'+id+'" style="margin-left:auto">Xóa bài</button>':'')+'</div></div>');
+  setTimeout(function(){var e=$('#qTitle');if(e&&!id)e.focus()},30);
+}
+function projForm(id){
+  var p=id?S.projects.filter(function(x){return x.id===id})[0]:{name:'',color:Object.keys(PAL).filter(function(k){return !S.projects.some(function(x){return x.color===k})})[0]||'dao'};
+  if(!p)return;
+  var n=id?S.posts.filter(function(x){return x.proj===id}).length:0,other=S.projects.filter(function(x){return x.id!==id})[0];
+  sheet('<h2>'+(id?'Sửa dự án':'Dự án mới')+'</h2><div class="form"><label class="f">Tên dự án hoặc kênh<input type="text" id="jName" value="'+esc(p.name)+'" placeholder="Ví dụ: Kênh TikTok cá nhân, Job chị Hoa" autocomplete="off"></label>'+
+    '<div><p class="small muted" style="margin-bottom:6px">Màu của dự án</p><div class="sw">'+Object.keys(PAL).map(function(k){return '<label title="'+PAL[k][2]+'"><input type="radio" name="jCol" value="'+k+'"'+(k===p.color?' checked':'')+'><span style="background:'+PAL[k][0]+';border-color:'+PAL[k][1]+'"></span>'+PAL[k][2]+'</label>'}).join('')+'</div></div>'+
+    (id&&other?'<p class="small muted">Khi xóa dự án này, '+n+' bài của dự án sẽ chuyển sang "'+esc(other.name)+'", không bị mất.</p>':'')+
+    '<div class="actions"><button class="btn primary" data-a="projsave" data-id="'+(id||'')+'">Lưu</button><button class="btn" data-a="close">Hủy</button>'+(id&&other?'<button class="btn danger" data-a="projdel" data-id="'+id+'" style="margin-left:auto">Xóa dự án</button>':'')+'</div></div>');
+  setTimeout(function(){var e=$('#jName');if(e)e.focus()},30);
+}
+function ctClick(a,b,id){
+  var p;
+  if(a==='ctview'){V.ct.view=b.dataset.v}
+  else if(a==='ctproj'){V.ct.proj=b.dataset.p}
+  else if(a==='calmode'){V.ct.cal=b.dataset.m}
+  else if(a==='calnav'){
+    var dir=+b.dataset.dir,c=V.ct;
+    if(!dir)c.ref=TODAY;
+    else if(c.cal==='month'){var d=pYmd(c.ref);d=new Date(d.getFullYear(),d.getMonth()+dir,1);c.ref=ymd(d)}
+    else c.ref=addDays(c.ref,dir*(c.cal==='week'?7:1));
+  }
+  else if(a==='calday'){if(V.ct.cal==='month'){V.ct.ref=b.dataset.d;V.ct.cal='day'}else return false}
+  else if(a==='postnew'){postForm(null,b.dataset.date?{date:b.dataset.date,status:b.dataset.date?4:0}:null);return true}
+  else if(a==='postedit'){postForm(id);return true}
+  else if(a==='postadd'){
+    var idea=$('#pIdea').value.trim();if(!idea){toast('Chị gõ ý tưởng bài vào ô trước nhé.');return true}
+    S.posts.push({id:uid(),idea:idea,proj:V.ct.proj!=='all'?V.ct.proj:S.projects[0].id,plat:V.ct.plat||'Facebook',fmt:'Bài viết',status:0,date:null,time:null,owner:'Tôi'});
+    $('#pIdea').value='';persist();toast('Đã thêm vào cột Ý tưởng.');
+  }
+  else if(a==='postsave'){
+    var t=$('#qTitle').value.trim();if(!t){toast('Chị nhập tiêu đề bài nhé.');return true}
+    var lk=$('#qLink').value.trim();if(lk&&!/^https?:\/\//i.test(lk))lk='https://'+lk;
+    var v={idea:t,proj:$('#qProj').value,status:+$('#qStat').value,plat:$('#qPlat').value,fmt:$('#qFmt').value,date:$('#qDate').value||null,time:$('#qTime').value||null,owner:$('#qOwn').value.trim(),caption:$('#qCap').value,body:$('#qBody').value,link:lk,note:$('#qNote').value};
+    if(v.time&&!v.date){toast('Chị chọn ngày đăng trước khi chọn giờ nhé.');return true}
+    if(id){p=S.posts.filter(function(x){return x.id===id})[0];if(p){Object.assign(p,v);delete p.ex}}
+    else S.posts.push(Object.assign({id:uid()},v));
+    closeModal();persist();toast('Đã lưu bài.');
+  }
+  else if(a==='capcopy'){
+    var cap=$('#qCap').value;if(!cap.trim()){toast('Bài này chưa có caption.');return true}
+    try{navigator.clipboard.writeText(cap).then(function(){toast('Đã sao chép caption.')},function(){toast('Máy chưa cho sao chép. Chị bôi đen caption rồi sao chép tay nhé.')})}catch(x){toast('Máy chưa cho sao chép. Chị bôi đen caption rồi sao chép tay nhé.')}
+    return true;
+  }
+  else if(a==='postmove'){p=S.posts.filter(function(x){return x.id===id})[0];if(p){p.status=Math.max(0,Math.min(5,p.status+parseInt(b.dataset.dir,10)));persist();toast('Đã chuyển sang "'+STAT[p.status]+'".')}}
+  else if(a==='postdel'){S.posts=S.posts.filter(function(x){return x.id!==id});closeModal();persist();toast('Đã xóa bài.')}
+  else if(a==='projnew'){projForm(null);return true}
+  else if(a==='projedit'){projForm(id);return true}
+  else if(a==='projsave'){
+    var nm=$('#jName').value.trim();if(!nm){toast('Chị đặt tên dự án nhé.');return true}
+    var col=(document.querySelector('input[name=jCol]:checked')||{}).value||'dao';
+    if(id){p=S.projects.filter(function(x){return x.id===id})[0];if(p){p.name=nm;p.color=col}}
+    else{var nid='p-'+uid();S.projects.push({id:nid,name:nm,color:col});V.ct.proj=nid}
+    closeModal();persist();toast('Đã lưu dự án.');
+  }
+  else if(a==='projdel'){
+    var to=S.projects.filter(function(x){return x.id!==id})[0];if(!to)return true;
+    S.posts.forEach(function(x){if(x.proj===id)x.proj=to.id});
+    S.projects=S.projects.filter(function(x){return x.id!==id});V.ct.proj='all';
+    closeModal();persist();toast('Đã xóa dự án. Các bài đã chuyển sang "'+to.name+'".');
+  }
+  else return false;
+  render();return true;
+}
+document.addEventListener('change',function(e){
+  var k=e.target.dataset&&e.target.dataset.ct;if(!k)return;
+  if(k==='fPlat')V.ct.plat=e.target.value;else if(k==='fStat')V.ct.stat=e.target.value;else if(k==='fOwn')V.ct.own=e.target.value;
+  render();
+});
+
 var IC={
   gom:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/>',
   'hom-nay':'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
@@ -1909,7 +2144,7 @@ var HERO={
   'hom-nay':['Hôm nay','Việc nào làm lúc mấy giờ, còn trống bao lâu, và những việc cần chú ý ngay.'],
   tuan:['Cả tuần','Nhìn 7 ngày một lượt để biết ngày nào quá đầy, ngày nào còn rảnh.'],
   'uu-tien':['Làm gì trước','Việc được chia thành 4 ô theo mức gấp và quan trọng. Bấm vào tên việc để đổi mức.'],
-  content:['Lịch bài đăng','Ghi ý tưởng bài Facebook, TikTok rồi đẩy dần từ ý tưởng đến đã đăng.'],
+  content:['Quản lý nội dung','Mọi dự án và kênh ở một chỗ: lịch đăng theo tháng, tuần, ngày, quy trình 6 bước từ ý tưởng đến đã đăng, caption và tài liệu của từng bài.'],
   arc:['Lock in','Về quê để tu thân. Nhịp ngủ, học và lời nhắc mỗi ngày cho đến Tết. Chưa muộn, chỉ cần bắt đầu và giữ đều.'],
   hoc:['Thời khóa biểu','Ghi lịch học cố định, khóa học định đăng ký, buổi tự học và việc khác. Ứng dụng xếp vào bảng theo thứ, giờ, ngày và báo khi trùng hoặc quá dày.']
 };
@@ -1920,6 +2155,7 @@ function hero(k){
 document.querySelectorAll('.tabs button').forEach(function(b){b.insertAdjacentHTML('afterbegin',svg(b.dataset.t))});
 
 function render(){
+  winSync();
   $('#heroGom').innerHTML=V.tab==='gom'?hero('gom'):'';
   $('#todayLabel').textContent=dLabel(TODAY);
   document.querySelectorAll('.tabs button').forEach(function(b){b.setAttribute('aria-current',b.dataset.t===V.tab?'true':'false')});
@@ -1992,6 +2228,7 @@ document.addEventListener('click',function(e){
   var a=b.dataset.a,id=b.dataset.id,t;
   if(a==='scrim'){if(e.target===b)closeModal();return}
   if(remClick(a,b,id,e))return;
+  if(ctClick(a,b,id))return;
   if(a==='tab'){go(b.dataset.t)}
   else if(a==='close'){closeModal()}
   else if(a==='parse'){
@@ -2042,13 +2279,6 @@ document.addEventListener('click',function(e){
   }
   else if(a==='delhabit'){S.habits=S.habits.filter(function(x){return x.id!==id});closeModal();persist();render()}
   else if(a==='habitlog'){var k=id+'_'+b.dataset.date;if(S.habitLog[k])delete S.habitLog[k];else S.habitLog[k]=1;persist();render()}
-  else if(a==='postadd'){
-    var idea=$('#pIdea').value.trim();if(!idea){toast('Chị nhập ý tưởng bài viết nhé.');return}
-    S.posts.push({id:uid(),idea:idea,plat:$('#pPlat').value,date:$('#pDate').value||null,status:0});
-    $('#pIdea').value='';persist();render();
-  }
-  else if(a==='postmove'){var p=S.posts.filter(function(x){return x.id===id})[0];if(p){p.status=Math.max(0,Math.min(3,p.status+parseInt(b.dataset.dir,10)));persist();render()}}
-  else if(a==='postdel'){S.posts=S.posts.filter(function(x){return x.id!==id});persist();render()}
   else if(a==='learnnew'){learnForm(null)}
   else if(a==='learnedit'){learnForm(id)}
   else if(a==='learntry'){
