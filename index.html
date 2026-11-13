@@ -470,6 +470,22 @@ input[type=url]{width:100%;min-height:42px;padding:8px 10px;border:1px solid var
 .sw input{position:absolute;opacity:0;pointer-events:none}
 .sw span{width:22px;height:22px;border-radius:50%;border:2px solid}
 .sw label:has(input:checked){border-color:var(--ink);font-weight:600;box-shadow:0 0 0 1px var(--ink) inset}
+/* ---------- Thư viện tự thân ---------- */
+.push{background:linear-gradient(135deg,color-mix(in srgb,var(--sec) 16%,var(--surface)),var(--surface))}
+.pline{font-family:var(--font-display);font-size:20px;line-height:1.4;font-weight:600;margin:0 0 10px;text-wrap:balance}
+.lsteps{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.lsteps div{border:1px solid var(--line);border-radius:10px;padding:8px;text-align:center;font-size:13px;font-weight:500;color:var(--muted)}
+.lsteps .done{background:#CDEBD9;border-color:#3F9A70;color:#1D5C3C}
+.lsteps .now{border:2px solid var(--sec);color:var(--ink);font-weight:700}
+.ng-nen_tang{background:#B3E2D7!important;color:#1F2B25!important}.ng-xu_huong{background:#FFEE99!important;color:#1F2B25!important}.ng-dang_nghi{background:#FFB3B3!important;color:#5A1A1A!important}
+.ndots{display:inline-flex;gap:3px;align-items:center}.ndots i{width:9px;height:9px;border-radius:50%;background:var(--line)}.ndots i.on{background:var(--sec)}
+.litem{display:flex;flex-direction:column;gap:5px;width:100%;text-align:left;border:0;border-top:1px solid var(--line);background:none;padding:12px 2px}
+.litem:first-of-type{border-top:0}.litem:hover b{text-decoration:underline}
+.litem b{font-weight:600;overflow-wrap:anywhere}
+.pre{white-space:pre-wrap;overflow-wrap:anywhere;margin-top:4px}
+details.panel summary{cursor:pointer;list-style-position:inside}
+.panel textarea,.panel input[type=search]{font:inherit}
+.panel textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);resize:vertical;line-height:1.5}
 </style>
 </head>
 <body>
@@ -484,7 +500,7 @@ input[type=url]{width:100%;min-height:42px;padding:8px 10px;border:1px solid var
     <button data-a="tab" data-t="tuan">Tuần</button>
     <button data-a="tab" data-t="uu-tien">Ưu tiên</button>
     <button data-a="tab" data-t="content">Content</button>
-    <button data-a="tab" data-t="hoc">Lịch học</button>
+    <button data-a="tab" data-t="hoc">Học</button>
     <button data-a="tab" data-t="arc">Lock in</button>
   </nav>
   <div class="tools"><span id="status" role="status"></span><button class="btn sm" data-a="settings">Cài đặt</button></div>
@@ -600,6 +616,7 @@ function fix(s){
   s.arc.log=s.arc.log||{};s.arc.subjects=s.arc.subjects||['','',''];
   s.learn=s.learn||[];
   s.tasks=s.tasks||[];s.habits=s.habits||[];s.habitLog=s.habitLog||{};s.posts=s.posts||[];
+  s.lib=Object.assign({ideas:[],mot:[],log:{},rev:{},topicId:null,topicWeek:null},s.lib||{});
   if(!s.projects||!s.projects.length)s.projects=[{id:'p-spa',name:'Minh Thư Spa',color:'dao'},{id:'p-me',name:'Kênh của Thảo',color:'tim'}];
   if(!s.postV){s.posts.forEach(function(p){p.status=[0,1,4,5][p.status]||0});s.postV=2}
   s.posts.forEach(function(p){if(!s.projects.some(function(x){return x.id===p.proj}))p.proj=s.projects[0].id;if(!p.plat)p.plat='Facebook'});
@@ -1135,7 +1152,7 @@ function renderTkb(){
     });
     h+='</div>';
   }
-  $('#v-hoc').innerHTML=hero('hoc')+h;
+  $('#v-hoc').innerHTML=hero('hoc')+hocSeg()+h;
 }
 
 /* ---------- Các cửa sổ nhập cho mục học ---------- */
@@ -1366,10 +1383,10 @@ var HOME=[
   {k:'tuan',t:'Cả tuần',d:'7 ngày một lượt, ngày nào kín, ngày nào rảnh.'},
   {k:'uu-tien',t:'Làm gì trước',d:'Chia việc gấp và quan trọng thành 4 ô.'},
   {k:'content',t:'Lịch bài đăng',d:'Từ ý tưởng đến đã đăng trên Facebook, TikTok.'},
-  {k:'hoc',t:'Thời khóa biểu',d:'Lịch học, khóa học, tự học và cảnh báo trùng.'},
+  {k:'hoc',t:'Học',d:'Thư viện điều đã học, thang Biết, Hiểu, Dùng và thời khóa biểu.'},
   {k:'arc',t:'Lock in',d:'Đếm ngược đến Tết, nhịp ngủ và học mỗi ngày.'}
 ];
-var EYE={gom:'Đổ ý nghĩ → thành việc','hom-nay':'Lịch trong ngày',tuan:'Bảng 7 ngày','uu-tien':'Gấp · Quan trọng',content:'Nhiều dự án · Lịch đăng',hoc:'Thời khóa biểu · Tự học',arc:'Winter arc · Đến Tết'};
+var EYE={gom:'Đổ ý nghĩ → thành việc','hom-nay':'Lịch trong ngày',tuan:'Bảng 7 ngày','uu-tien':'Gấp · Quan trọng',content:'Nhiều dự án · Lịch đăng',hoc:'Thư viện · Thời khóa biểu',arc:'Winter arc · Đến Tết'};
 var SCN={
   'hom-nay':{sky:['#FFE9A8','#FFB45C','#3B7A6E'],sun:[210,150,38,'#FFF4CF'],hills:['#6DAF8A','#3F8F6B','#1F5A41'],glow:['#B7742A','#1F5A41']},
   gom:{sky:['#FFD9E3','#F5A3BE','#6A4A80'],sun:[220,120,30,'#FFF0D2'],hills:['#9A6C95','#6A4A80','#2E2145'],glow:['#9A4A78','#2E2145']},
@@ -1456,7 +1473,7 @@ function homeStats(k){
   }
   if(k==='hoc'){
     an=analyzeWeek(mondayOf(TODAY));
-    return [['Lịch cố định',S.fixed.filter(function(f){return !f.arc}).length],['Môn tự học',S.learn.length],['Tuần này',an.level==='ok'?'Ổn':an.level==='tight'?'Dày':'Trùng']];
+    return [['Ý trong thư viện',S.lib.ideas.filter(function(i){return i.trangthai!=='bo'}).length],['Chuỗi học',lStreak()+' ngày'],['Tuần này',an.level==='ok'?'Ổn':an.level==='tight'?'Dày':'Trùng']];
   }
   var a=S.arc;
   return [['Ngày còn lại',Math.max(0,dDiff(a.end,TODAY))],['Chuỗi ngày',streak()],['Ngày đạt',Object.keys(a.log).filter(function(d){return dayState(d)===2}).length]];
@@ -2137,6 +2154,206 @@ document.addEventListener('change',function(e){
   render();
 });
 
+/* ---------- Thư viện tự thân: những gì đã học, thang Biết, Hiểu, Dùng ---------- */
+var NGAN={nen_tang:'Nền tảng',xu_huong:'Xu hướng',dang_nghi:'Đáng nghi'};
+var NACN=['Biết','Hiểu','Dùng'];
+var LSRC=['NotebookLM','TikTok','YouTube','Sách, báo, web','Khóa học','Trong đầu','Khác'];
+var NBLM='https://notebooklm.google.com/';
+V.hoc='learn';V.lib='nen_tang';V.lq='';V.idea=null;V.pick=0;
+var lnorm=function(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d')};
+var SCAM=['làm giàu nhanh','đảm bảo lợi nhuận','đảm bảo lãi','cam kết lãi','cam kết lợi nhuận','bao lãi','lãi suất cao bất thường','nhân đôi tài sản','x2 tài sản','x10 tài sản','không rủi ro','zero rủi ro','ăn chắc','100% thắng','thắng 100%','kiếm tiền dễ dàng','không cần vốn kiếm','thu nhập thụ động 100%','tín hiệu vào lệnh','nạp tiền để nhận','đa cấp','kéo người','hoa hồng giới thiệu','lợi nhuận mỗi ngày','siêu lợi nhuận','get rich quick','guaranteed return','guaranteed profit','risk-free','risk free','chỉ cần nạp','ib nhận','inbox nhận'].map(function(k){return [k,lnorm(k)]});
+var TREND=['xu hướng','trend','viral','đang hot','mới nổi','tiktok shop','mmo','ai kiếm tiền','nền tảng mới','bùng nổ','creator','affiliate'].map(lnorm);
+var BASE=['đòn bẩy','dòng tiền','thuế','lạm phát','lãi suất','kinh tế','chính trị','tiết kiệm','tư duy','mindset','quỹ dự phòng','đầu tư dài hạn','kinh doanh','tài chính cá nhân','vốn','lợi nhuận','marketing','content','kỹ năng'].map(lnorm);
+function scanScam(t){var n=lnorm(t),r=[];SCAM.forEach(function(p){if(n.indexOf(p[1])>=0)r.push(p[0])});return r}
+function guessNgan(t){if(scanScam(t).length)return 'dang_nghi';var n=lnorm(t),tr=TREND.some(function(k){return n.indexOf(k)>=0}),ba=BASE.some(function(k){return n.indexOf(k)>=0});return tr&&!ba?'xu_huong':'nen_tang'}
+var LB=function(){return S.lib};
+function ideaOf(id){return LB().ideas.filter(function(i){return i.id===id})[0]}
+function lShort(t,n){t=String(t||'');return t.length>n?t.slice(0,n).replace(/\s+\S*$/,'')+'…':t}
+function dDiff2(a,b){return Math.round((pYmd(b)-pYmd(a))/864e5)}
+function learnDays(){return Object.keys(LB().log).sort()}
+function missed(){var d=learnDays();if(!d.length)return 0;return Math.max(0,dDiff2(d[d.length-1],TODAY)-1)}
+function lStreak(){var set=LB().log,d=TODAY,n=0;if(!set[d])d=addDays(d,-1);while(set[d]){n++;d=addDays(d,-1)}return n}
+function isStale(i){if(i.ngan==='dang_nghi'||i.trangthai==='bo'||i.trangthai==='hoan'||(i.nac||0)>=3)return false;var t=(i.lastTouched||i.createdAt||'').slice(0,10);return !!t&&dDiff2(t,TODAY)>14}
+function tier(){var m=missed();return m===0?1:(m<3?2:3)}
+function pickLine(){var t=tier(),M=LB().mot,L=M.filter(function(m){return (m.level||1)===t});if(!L.length)L=M.filter(function(m){return (m.level||1)<=t});if(!L.length)return 'Mở app là bước đầu rồi. 20 phút thôi, chị Thảo.';return L[Math.abs(dDiff2('2026-01-01',TODAY)+V.pick)%L.length].text}
+function topicIdea(){return LB().topicId?ideaOf(LB().topicId):null}
+function autoPick(){var C=LB().ideas.filter(function(i){return i.trangthai!=='bo'&&i.trangthai!=='hoan'&&i.ngan!=='dang_nghi'&&(i.nac||0)<3});
+  C.sort(function(a,b){var oa=a.ngan==='nen_tang'?0:1,ob=b.ngan==='nen_tang'?0:1;return oa-ob||(b.nac||0)-(a.nac||0)||String(a.createdAt||'').localeCompare(String(b.createdAt||''))});return C[0]||null}
+function lWeek(){var a=mondayOf(TODAY),b=addDays(a,6),days=0,mins=0,steps=[];
+  Object.keys(LB().log).forEach(function(k){if(k>=a&&k<=b){days++;mins+=LB().log[k].minutes||0}});
+  LB().ideas.forEach(function(i){(i.stepLog||[]).forEach(function(s){if(s.date>=a&&s.date<=b)steps.push({t:i.title,nac:s.nac})})});
+  return {a:a,b:b,days:days,mins:mins,steps:steps}}
+function nchip(g){return '<span class="chip ng-'+g+'">'+(NGAN[g]||g)+'</span>'}
+function ndots(n){var h='<span class="ndots" aria-label="Nấc '+n+' trên 3">';for(var i=0;i<3;i++)h+='<i class="'+(i<n?'on':'')+'"></i>';return h+'</span>'}
+function lfield(i,f,label,rows,ph){var v=f.split('.').reduce(function(o,k){return o&&o[k]},i)||'';return '<label class="f">'+label+'<textarea data-lf="'+f+'" data-id="'+i.id+'" rows="'+(rows||3)+'"'+(ph?' placeholder="'+esc(ph)+'"':'')+'>'+esc(v)+'</textarea></label>'}
+function steps(n){return '<div class="lsteps">'+NACN.map(function(x,k){return '<div class="'+(k<n?'done':(k===n?'now':''))+'">'+(k+1)+'. '+x+'</div>'}).join('')+'</div>'}
+
+function hocSeg(){return '<div class="seg" role="tablist" aria-label="Các phần của mục Học">'+[['learn','Học hôm nay'],['lib','Thư viện'],['week','Tuần · Động lực'],['tkb','Thời khóa biểu']].map(function(x){return '<button data-a="hocv" data-v="'+x[0]+'" aria-current="'+(V.hoc===x[0])+'">'+x[1]+'</button>'}).join('')+'</div>'}
+
+function vLearn(){
+  var t=topicIdea(),m=missed(),st=lStreak(),L=LB(),h='';
+  h+='<div class="panel push"><p class="pline">'+esc(pickLine())+'</p><div class="meta"><span>Chuỗi học: <b>'+st+' ngày</b></span>'+(m>0?'<span>Đang bỏ: <b>'+m+' ngày</b></span>':'')+(L.log[TODAY]?'<span>Hôm nay đã học '+L.log[TODAY].minutes+' phút</span>':'')+'<button class="btn sm" data-a="lline">Câu khác</button></div></div>';
+  if(pYmd(TODAY).getDay()===0&&!L.rev[mondayOf(TODAY)])h+='<div class="panel warn"><div class="head"><p class="small"><b>Chủ nhật rồi.</b> Mình làm tổng kết tuần, mất 3 phút.</p><button class="btn sm primary" data-a="hocv" data-v="week">Làm ngay</button></div></div>';
+  if(t&&L.topicWeek&&L.topicWeek!==mondayOf(TODAY)&&(t.nac||0)<3)h+='<div class="panel"><p class="small">Tuần mới rồi. Chị muốn <b>tiếp tục</b> chủ đề này hay <b>đổi</b>?</p><div class="actions"><button class="btn sm" data-a="lkeep">Tiếp tục</button><button class="btn sm" data-a="lauto">Chọn giúp tôi chủ đề mới</button></div></div>';
+  h+='<div class="panel"><div class="head"><h3 style="margin:0">Chủ đề tuần này</h3><button class="btn sm" data-a="lnew">+ Ghi ý vừa học</button></div>';
+  if(!t){
+    var n=L.ideas.filter(function(i){return i.trangthai!=='bo'}).length;
+    h+='<p class="empty">'+(n?'Chị có '+n+' ý trong thư viện nhưng chưa chọn chủ đề cho tuần này.':'Thư viện còn trống. Học xong một thứ trên NotebookLM thì bấm "+ Ghi ý vừa học".')+'</p>';
+    if(n)h+='<div class="actions"><button class="btn primary" data-a="lauto">Chọn giúp tôi 1 chủ đề</button><button class="btn" data-a="hocv" data-v="lib">Tự chọn trong thư viện</button></div>';
+  }else{
+    var nac=t.nac||0,cur=Math.min(nac,2);
+    h+='<div class="head" style="margin-top:10px"><button class="ttl" data-a="lopen" data-id="'+t.id+'" style="font-size:17px;font-weight:600">'+esc(t.title)+'</button>'+nchip(t.ngan)+'</div>'+steps(nac);
+    if(nac>=3)h+='<div class="verdict ok" style="margin-top:10px"><p class="small">Chủ đề này xong cả 3 nấc. Chị đã dùng nó vào việc thật.</p></div><div class="actions"><button class="btn primary" data-a="lauto">Chọn chủ đề tiếp theo</button></div>';
+    else{
+      if(cur===0)h+=lfield(t,'biet','Nấc 1, Biết. Ý chính trong 1 dòng, bằng lời của chị',2,'Ví dụ: Đòn bẩy là dùng sức, tiền hoặc thông tin của người khác để làm được nhiều hơn sức mình.');
+      if(cur===1){if(t.tomtat)h+='<div class="verdict ok" style="margin-top:10px"><b class="small">Bản tóm tắt</b><div class="pre small">'+esc(t.tomtat)+'</div></div>';h+=lfield(t,'hieu','Nấc 2, Hiểu. Nếu giải thích cho một người bạn, chị nói sao?',4)}
+      if(cur===2)h+=lfield(t,'dung','Nấc 3, Dùng. Chị gắn nó vào việc hoặc quyết định thật nào?',3,'Ví dụ: áp dụng vào caption Minh Thư Spa tuần này.')+'<div class="actions"><button class="btn sm" data-a="ltask" data-id="'+t.id+'">Biến thành việc có lịch</button></div>';
+      h+='<div class="actions"><button class="btn primary" data-a="llog" data-m="20" data-id="'+t.id+'">Hôm nay đã học 20 phút</button>'+(m>=3?'<button class="btn" data-a="llog" data-m="5" data-id="'+t.id+'">Chỉ làm 5 phút thôi</button>':'')+'<button class="btn" data-a="lstep" data-id="'+t.id+'">Xong nấc '+NACN[cur]+'</button></div>';
+      h+='<p class="small muted" style="margin-top:8px">Mỗi ngày 20 phút, chỉ một chủ đề. Chị chưa cần học hết, chỉ cần qua từng nấc.</p>';
+    }
+  }
+  h+='</div>';
+  var stale=L.ideas.filter(isStale);
+  if(stale.length)h+='<div class="panel warn"><div class="head"><p class="small"><b>'+stale.length+' ý nằm quá 14 ngày không đụng tới.</b> Chị đang chờ đúng lúc hay đang né?</p><button class="btn sm" data-a="lstale">Xem và quyết</button></div></div>';
+  h+='<div class="panel"><h3>Vòng học của chị</h3><ol class="guide"><li>Gặp thứ hay: bỏ vào NotebookLM, nhờ tóm tắt và hỏi lại chỗ chưa hiểu.</li><li>Học xong: bấm "+ Ghi ý vừa học", tự viết 3 dòng bằng lời của chị, dán link sổ NotebookLM.</li><li>Leo thang Biết, Hiểu, Dùng. Tới nấc Dùng thì biến nó thành một việc có lịch.</li></ol><div class="actions"><a class="btn sm" href="'+NBLM+'" target="_blank" rel="noopener">Mở NotebookLM</a></div></div>';
+  return h;
+}
+function lfilt(i,k){if(k==='bo')return i.trangthai==='bo';if(i.trangthai==='bo')return false;if(k==='cq')return isStale(i);return i.ngan===k}
+function vLib(){
+  var L=LB(),tabs=[['nen_tang','Nền tảng'],['xu_huong','Xu hướng'],['dang_nghi','Đáng nghi'],['cq','Cần quyết'],['bo','Kho cũ']];
+  var h='<div class="panel"><div class="head"><h3 style="margin:0">Thư viện của tôi <span class="muted small">'+L.ideas.length+' ý</span></h3><span class="actions" style="margin:0"><a class="btn sm" href="'+NBLM+'" target="_blank" rel="noopener">Mở NotebookLM</a><button class="btn sm primary" data-a="lnew">+ Ghi ý vừa học</button></span></div>';
+  h+='<div class="wf" style="margin-top:12px">'+tabs.map(function(x){return '<button data-a="lib" data-k="'+x[0]+'" aria-pressed="'+(V.lib===x[0])+'">'+x[1]+' '+L.ideas.filter(function(i){return lfilt(i,x[0])}).length+'</button>'}).join('')+'</div>';
+  h+='<input type="search" id="lq" value="'+esc(V.lq)+'" placeholder="Tìm trong thư viện" aria-label="Tìm trong thư viện" style="width:100%;min-height:42px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);margin:6px 0 4px">';
+  var q=lnorm(V.lq),list=L.ideas.filter(function(i){return lfilt(i,V.lib)&&(!q||lnorm(i.title+' '+(i.biet||'')+' '+(i.hieu||'')+' '+(i.body||'')).indexOf(q)>=0)});
+  list.sort(function(a,b){return String(b.lastTouched||'').localeCompare(String(a.lastTouched||''))});
+  if(!list.length)h+='<p class="empty">'+(L.ideas.length?'Không có ý nào ở mục này.':'Thư viện còn trống. Bấm "+ Ghi ý vừa học" để ghi ý đầu tiên.')+'</p>';
+  list.forEach(function(i){
+    var pv=i.rieng_tu?'':(i.biet||i.tomtat||'');
+    h+='<button class="litem" data-a="lopen" data-id="'+i.id+'"><b>'+esc(i.title)+'</b><span class="meta">'+nchip(i.ngan)+ndots(i.nac||0)+(L.topicId===i.id?'<span class="chip imp">Chủ đề tuần</span>':'')+(isStale(i)?'<span class="chip hot">Nằm 14 ngày+</span>':'')+(i.flags&&i.flags.length?'<span class="chip ng-dang_nghi">Có dấu hiệu lừa</span>':'')+(i.link?'<span class="chip">Có nguồn</span>':'')+(i.rieng_tu?'<span class="chip">Riêng tư</span>':'')+'</span>'+(pv?'<span class="small muted">'+esc(lShort(pv,130))+'</span>':'')+'</button>';
+  });
+  h+='</div>';
+  h+='<details class="panel"><summary><b>Chuyển dữ liệu từ app Học Để Làm cũ</b></summary><p class="small muted" style="margin:8px 0">Chọn file chuyen-thu-vien.json mà em Minh đã chuẩn bị trong thư mục gom-viec trên laptop. Ý đã có rồi sẽ được bỏ qua, không bị trùng.</p><input type="file" id="limp" accept=".json,application/json"></details>';
+  return h;
+}
+function vIdea(){
+  var i=ideaOf(V.idea);if(!i)return '<div class="panel"><p class="empty">Không tìm thấy ý này.</p><button class="btn" data-a="lback">‹ Thư viện</button></div>';
+  var nac=i.nac||0,h='<div class="head"><button class="btn sm" data-a="lback">‹ Thư viện</button>'+nchip(i.ngan)+'</div>';
+  if(i.flags&&i.flags.length)h+='<div class="panel warn"><p class="small"><b>Cảnh báo.</b> Có từ khóa hay gặp ở chiêu lừa: <b>'+esc(i.flags.join(', '))+'</b>. Ba câu cần trả lời trước khi tin: ai trả tiền cho mình, mình mất tối đa bao nhiêu, ai đang kiếm tiền từ việc bán ý này?</p></div>';
+  if(isStale(i))h+='<div class="panel warn"><p class="small">Ý này nằm hơn 14 ngày không đụng tới. Chị chọn: học tiếp, hoãn có chủ đích, hay bỏ vào kho cũ?</p></div>';
+  h+='<div class="panel"><div class="form"><label class="f">Tên ý<input type="text" data-lf="title" data-id="'+i.id+'" value="'+esc(i.title)+'"></label>'+
+    '<div class="form two"><label class="f">Ngăn<select data-lf="ngan" data-id="'+i.id+'">'+Object.keys(NGAN).map(function(k){return '<option value="'+k+'"'+(i.ngan===k?' selected':'')+'>'+NGAN[k]+'</option>'}).join('')+'</select></label>'+
+    '<label class="f">Học từ đâu<select data-lf="source" data-id="'+i.id+'">'+(LSRC.indexOf(i.source)<0&&i.source?LSRC.concat([i.source]):LSRC).map(function(s){return '<option'+(s===i.source?' selected':'')+'>'+esc(s)+'</option>'}).join('')+'</select></label></div>'+
+    '<label class="f">Link nguồn (sổ NotebookLM, video, bài viết)<input type="url" data-lf="link" data-id="'+i.id+'" value="'+esc(i.link||'')+'" placeholder="https://notebooklm.google.com/..."></label>'+
+    (/^https?:\/\//i.test(i.link||'')?'<a class="btn sm" style="justify-self:start" href="'+esc(i.link)+'" target="_blank" rel="noopener">Mở nguồn</a>':'')+
+    lfield(i,'body','Ghi chú, nội dung gốc',4)+
+    '<label class="checks"><label><input type="checkbox" data-lf="rieng_tu" data-id="'+i.id+'"'+(i.rieng_tu?' checked':'')+'>Riêng tư (ẩn phần xem trước trong thư viện, em Minh không đọc)</label></label>'+
+    '<p class="small muted">Thêm ngày '+esc((i.createdAt||'').slice(0,10).split('-').reverse().join('/'))+'</p></div></div>';
+  h+='<div class="panel"><h3>Thang 3 nấc</h3>'+steps(nac)+'<div class="form" style="margin-top:10px">'+lfield(i,'biet','1. Biết: ý chính trong 1 dòng',2)+
+    (i.tomtat?'<div class="verdict ok"><b class="small">Bản tóm tắt</b><div class="pre small">'+esc(i.tomtat)+'</div></div>':'')+
+    lfield(i,'hieu','2. Hiểu: chị tự nói lại bằng lời của mình',4)+lfield(i,'dung','3. Dùng: gắn vào việc hoặc quyết định thật nào?',3)+'</div>';
+  var tk=(i.taskIds||[]).map(find).filter(Boolean);
+  if(tk.length){h+='<h3 style="margin-top:12px">Việc đã tạo từ ý này</h3>';tk.forEach(function(t){h+=trow(t,{showDate:true})})}
+  h+='<div class="actions">'+(nac<3?'<button class="btn primary" data-a="lstep" data-id="'+i.id+'">Xong nấc '+NACN[nac]+'</button>':'<span class="chip imp">Đã xong cả 3 nấc</span>')+'<button class="btn" data-a="ltask" data-id="'+i.id+'">Biến thành việc có lịch</button></div></div>';
+  if(i.ngan==='xu_huong')h+='<div class="panel"><h3>Hạn của xu hướng</h3><div class="form">'+lfield(i,'han.conSom','Còn sớm không? Bao nhiêu người đã làm?',2)+lfield(i,'han.aiKiem','Ai đang kiếm tiền thật? Bằng chứng là gì?',2)+lfield(i,'han.thuRe','Cách thử rẻ nhất trong 7 ngày?',2)+'</div></div>';
+  var F=[['rr_thap','Rủi ro THẤP: cách làm'],['rr_vua','Rủi ro VỪA: cách làm'],['rr_cao','Rủi ro CAO: cách làm'],['mat_toi_da','Tệ nhất mất bao nhiêu tiền và giờ'],['cp_thap','Chi phí thấp nhất'],['cp_tran','Mức trần chi phí chị tự đặt'],['thu_truoc','Cách thử trước'],['dau_hieu_dung','Dấu hiệu phải dừng']];
+  h+='<details class="panel"'+(i.theqd&&Object.keys(i.theqd).some(function(k){return i.theqd[k]})?' open':'')+'><summary><b>Thẻ Quyết định</b> (rủi ro, chi phí)</summary><p class="small muted" style="margin:8px 0">Học xong, chị bàn với em Minh trên laptop: nói "Bàn ý: '+esc(lShort(i.title,50))+'". Em giúp chốt biên độ rủi ro và chi phí, chị ghi vào đây. Em không khuyên đầu tư cụ thể.</p><div class="form">'+F.map(function(f){return lfield(i,'theqd.'+f[0],f[1],2)}).join('')+'</div></details>';
+  h+='<div class="actions">'+(i.trangthai==='bo'?'<button class="btn" data-a="lstate" data-s="dang" data-id="'+i.id+'">Khôi phục từ kho cũ</button>':'<button class="btn primary" data-a="ltopic" data-id="'+i.id+'">Đặt làm chủ đề tuần này</button><button class="btn" data-a="lstate" data-s="hoan" data-id="'+i.id+'">Hoãn có chủ đích</button><button class="btn danger" data-a="lstate" data-s="bo" data-id="'+i.id+'">Bỏ vào kho cũ</button>')+'</div>';
+  return h;
+}
+function vLWeek(){
+  var L=LB(),w=lWeek(),r=L.rev[w.a]||{},h='<div class="panel"><h3>Tổng kết tuần '+dLabel(w.a).split(', ')[1]+' đến '+dLabel(w.b).split(', ')[1]+'</h3><div class="cstats"><div class="cst"><b>'+w.days+'/7</b><span>ngày học</span></div><div class="cst"><b>'+w.mins+'</b><span>phút</span></div><div class="cst"><b>'+w.steps.length+'</b><span>nấc đã qua</span></div><div class="cst"><b>'+L.ideas.filter(function(i){var d=(i.createdAt||'').slice(0,10);return d>=w.a&&d<=w.b}).length+'</b><span>ý mới ghi</span></div></div>';
+  var rec=w.steps.length?'Tuần này chị qua '+w.steps.length+' nấc: '+w.steps.map(function(s){return 'nấc '+NACN[s.nac-1]+' của "'+lShort(s.t,32)+'"'}).join(', ')+'. Đó là việc chị đã làm thật, không phải lưu thêm.':(w.days?'Tuần này chị học '+w.days+' ngày. Chưa qua nấc nào, nhưng chị đã ngồi xuống học, đó là phần khó nhất.':'Tuần này chưa có ngày học nào. Không sao. Tuần sau bắt đầu bằng 5 phút, chỉ một chủ đề.');
+  h+='<div class="verdict ok" style="margin-top:12px"><p class="small">'+esc(rec)+'</p></div><div class="form" style="margin-top:12px">'+
+    '<label class="f">1. Tuần này chị học được gì?<textarea id="r1" rows="2">'+esc(r.hocDuoc||'')+'</textarea></label><label class="f">2. Chị dùng được ở đâu (công việc, quyết định tiền)?<textarea id="r2" rows="2">'+esc(r.dungO||'')+'</textarea></label><label class="f">3. Tuần sau chị chọn chủ đề nào, và vì sao?<textarea id="r3" rows="2">'+esc(r.tuanSau||'')+'</textarea></label></div><div class="actions"><button class="btn primary" data-a="lrev">Lưu tổng kết tuần</button></div></div>';
+  var old=Object.keys(L.rev).filter(function(k){return k!==w.a}).sort().reverse();
+  if(old.length){h+='<div class="panel"><h3>Các tuần trước</h3>';old.forEach(function(k){var x=L.rev[k];h+='<div class="row"><div class="body"><b>Tuần '+dLabel(k).split(', ')[1]+'</b><div class="pre small">Học được: '+esc(x.hocDuoc||'')+'\nDùng ở: '+esc(x.dungO||'')+'\nTuần sau: '+esc(x.tuanSau||'')+'</div></div></div>'});h+='</div>'}
+  h+='<div class="panel"><h3>Câu động lực của tôi</h3><p class="small muted" style="margin-bottom:8px">Bỏ học càng nhiều ngày, câu càng mạnh. Mức 1 khi đang học đều, mức 2 khi bỏ 1 đến 2 ngày, mức 3 khi bỏ từ 3 ngày (có thêm nút "Chỉ làm 5 phút").</p>'+
+    '<div class="form"><label class="f">Thêm câu mới<textarea id="mText" rows="2" placeholder="Ví dụ: Bình đi học văn bằng 2 rồi kìa Thảo."></textarea></label><div class="wq" style="margin:0"><select id="mLv" aria-label="Mức"><option value="1">Mức 1, nhẹ</option><option value="2">Mức 2, vừa</option><option value="3">Mức 3, mạnh</option></select><button class="btn primary" data-a="lmot">Thêm câu</button></div></div>';
+  var M=L.mot.slice().sort(function(a,b){return (a.level||1)-(b.level||1)});
+  if(!M.length)h+='<p class="empty">Chưa có câu nào.</p>';
+  M.forEach(function(m){h+='<div class="row"><span class="chip">Mức '+(m.level||1)+'</span><div class="body">'+esc(m.text)+'</div><button class="btn sm ghost" data-a="lmotdel" data-id="'+m.id+'">Xóa</button></div>'});
+  return h+'</div>';
+}
+function renderHoc(){
+  if(V.hoc==='tkb'){renderTkb();return}
+  var body=V.hoc==='lib'?(V.idea?vIdea():vLib()):V.hoc==='week'?vLWeek():vLearn();
+  var keep=$('#lq')&&document.activeElement===$('#lq');
+  $('#v-hoc').innerHTML=hero('hoc')+hocSeg()+body;
+  if(keep){var q=$('#lq');q.focus();try{q.setSelectionRange(q.value.length,q.value.length)}catch(x){}}
+}
+function ideaForm(){
+  sheet('<h2>Ghi ý vừa học</h2><div class="form"><label class="f">Chị học được gì? Viết bằng lời của chị<textarea id="iText" rows="5" placeholder="Dòng đầu là tên ý. Nhiều ý thì cách nhau một dòng trống."></textarea></label>'+
+    '<div class="form two"><label class="f">Học từ đâu<select id="iSrc">'+LSRC.map(function(s){return '<option>'+s+'</option>'}).join('')+'</select></label>'+
+    '<label class="f">Link nguồn (không bắt buộc)<input type="url" id="iLink" placeholder="Link sổ NotebookLM hoặc video"></label></div>'+
+    '<div class="checks"><label><input type="checkbox" id="iPriv">Riêng tư (em Minh không đọc)</label></div>'+
+    '<p class="small muted">App tự xếp vào Nền tảng, Xu hướng hoặc Đáng nghi theo từ khóa và báo nếu có dấu hiệu lừa đảo. Chị đổi lại được trong trang chi tiết.</p>'+
+    '<div class="actions"><button class="btn primary" data-a="lsave">Lưu vào thư viện</button><button class="btn" data-a="close">Hủy</button><a class="btn" href="'+NBLM+'" target="_blank" rel="noopener" style="margin-left:auto">Mở NotebookLM</a></div></div>');
+  setTimeout(function(){var e=$('#iText');if(e)e.focus()},30);
+}
+function lTouch(i){i.lastTouched=new Date().toISOString()}
+function libClick(a,b,id){
+  var L=LB(),i=id?ideaOf(id):null;
+  if(a==='hocv'){V.hoc=b.dataset.v;V.idea=null;window.scrollTo(0,0)}
+  else if(a==='lib'){V.lib=b.dataset.k}
+  else if(a==='lopen'){V.hoc='lib';V.idea=id;window.scrollTo(0,0)}
+  else if(a==='lback'){V.idea=null}
+  else if(a==='lline'){V.pick++}
+  else if(a==='lnew'){ideaForm();return true}
+  else if(a==='lsave'){
+    var raw=$('#iText').value,parts=raw.split(/\n\s*\n/).map(function(s){return s.trim()}).filter(Boolean);
+    if(!parts.length){toast('Chị viết điều vừa học vào ô trước nhé.');return true}
+    var lk=$('#iLink').value.trim();if(lk&&!/^https?:\/\//i.test(lk))lk='https://'+lk;
+    var now=new Date().toISOString(),warn=0;
+    parts.forEach(function(p){
+      var lines=p.split('\n'),title=lines[0].replace(/https?:\/\/\S+/g,'').trim().slice(0,90)||'Ý chưa đặt tên',rest=lines.slice(1).join('\n').trim(),fl=scanScam(p);if(fl.length)warn++;
+      L.ideas.push({id:'i-'+uid(),title:title,body:rest,biet:rest&&rest.length<=200?rest:'',source:$('#iSrc').value,link:lk,ngan:guessNgan(p),flags:fl,nac:0,stepLog:[],rieng_tu:$('#iPriv').checked,trangthai:'dang',createdAt:now,lastTouched:now,taskIds:[]});
+    });
+    closeModal();persist();toast('Đã lưu '+parts.length+' ý vào thư viện.'+(warn?' Có '+warn+' ý mang dấu hiệu lừa đảo, chị xem kỹ.':''));
+  }
+  else if(a==='lauto'){var p=autoPick();if(!p){toast('Chưa có ý phù hợp. Chị ghi thêm ý vào thư viện trước.');return true}L.topicId=p.id;L.topicWeek=mondayOf(TODAY);persist();toast('Chủ đề tuần này: '+p.title)}
+  else if(a==='lkeep'){L.topicWeek=mondayOf(TODAY);persist()}
+  else if(a==='ltopic'&&i){L.topicId=i.id;L.topicWeek=mondayOf(TODAY);V.hoc='learn';V.idea=null;persist();toast('Đã đặt làm chủ đề tuần này.')}
+  else if(a==='llog'){var mn=+b.dataset.m,rec=L.log[TODAY]||(L.log[TODAY]={minutes:0});rec.minutes+=mn;rec.ideaId=id||null;if(i)lTouch(i);persist();toast(mn+' phút hôm nay. Chuỗi học: '+lStreak()+' ngày.')}
+  else if(a==='lstep'&&i){var n=Math.min(3,(i.nac||0)+1);i.nac=n;i.stepLog=(i.stepLog||[]).concat([{nac:n,date:TODAY}]);lTouch(i);persist();toast('Xong nấc '+NACN[n-1]+' của "'+lShort(i.title,40)+'".'+(n===2?' Nấc Dùng: biến nó thành một việc có lịch nhé.':''))}
+  else if(a==='lstate'&&i){i.trangthai=b.dataset.s;lTouch(i);if(b.dataset.s!=='dang'){V.idea=null;if(L.topicId===i.id)L.topicId=null}persist();toast(b.dataset.s==='bo'?'Đã bỏ vào kho cũ. Chị khôi phục lại được.':b.dataset.s==='hoan'?'Đã hoãn có chủ đích. App sẽ không nhắc ý này nữa.':'Đã khôi phục.')}
+  else if(a==='lstale'){V.hoc='lib';V.lib='cq';V.idea=null}
+  else if(a==='ltask'&&i){V.fromIdea=i.id;taskForm(null,{title:'Áp dụng: '+lShort(i.title,70),cat:'hoc',dur:45,important:true});return true}
+  else if(a==='lrev'){L.rev[mondayOf(TODAY)]={hocDuoc:$('#r1').value,dungO:$('#r2').value,tuanSau:$('#r3').value,savedAt:new Date().toISOString()};persist();toast('Đã lưu tổng kết tuần. Tuần này chị làm đủ phần việc của mình.')}
+  else if(a==='lmot'){var tx=$('#mText').value.trim();if(!tx){toast('Chị gõ câu trước nhé.');return true}L.mot.push({id:'m-'+uid(),text:tx,level:+$('#mLv').value});persist();toast('Đã thêm câu động lực.')}
+  else if(a==='lmotdel'){L.mot=L.mot.filter(function(m){return m.id!==id});persist();toast('Đã xóa câu.')}
+  else return false;
+  render();return true;
+}
+document.addEventListener('change',function(e){
+  var t=e.target;
+  if(t.id==='limp'&&t.files&&t.files[0]){
+    var fr=new FileReader();
+    fr.onload=function(){
+      var d=null;try{d=JSON.parse(String(fr.result||''))}catch(x){}
+      if(!d||d.kind!=='gomviec-thuvien'||!Array.isArray(d.ideas)){toast('File này không phải file chuyển thư viện.');return}
+      var L=LB(),have={},ni=0,nm=0;L.ideas.forEach(function(i){have[i.oldId||i.id]=1});
+      d.ideas.forEach(function(o){if(!o||have[o.oldId])return;L.ideas.push(Object.assign({taskIds:[],stepLog:[],nac:0,trangthai:'dang'},o,{id:'i-'+uid()}));have[o.oldId]=1;ni++});
+      var hm={};L.mot.forEach(function(m){hm[m.text]=1});
+      (d.mot||[]).forEach(function(m){if(m&&m.text&&!hm[m.text]){L.mot.push({id:'m-'+uid(),text:m.text,level:m.level||1});hm[m.text]=1;nm++}});
+      Object.keys(d.log||{}).forEach(function(k){if(!L.log[k])L.log[k]=d.log[k]});
+      Object.keys(d.rev||{}).forEach(function(k){if(!L.rev[k])L.rev[k]=d.rev[k]});
+      persist();V.hoc='lib';V.idea=null;render();
+      toast(ni||nm?('Đã chuyển '+ni+' ý và '+nm+' câu động lực sang Gom Việc.'):'Dữ liệu này đã có sẵn, không có gì mới để chuyển.');
+    };
+    fr.readAsText(t.files[0],'utf-8');return;
+  }
+  var f=t.dataset&&t.dataset.lf;if(!f)return;
+  var i=ideaOf(t.dataset.id);if(!i)return;
+  var v=t.type==='checkbox'?t.checked:t.value;
+  if(f==='title'&&!String(v).trim())return;
+  if(f==='link'&&v&&!/^https?:\/\//i.test(v))v='https://'+v.trim();
+  var p=f.split('.'),o=i;for(var k=0;k<p.length-1;k++){o=o[p[k]]=(o[p[k]]&&typeof o[p[k]]==='object')?o[p[k]]:{}}
+  o[p[p.length-1]]=v;lTouch(i);persist();
+  if(f==='ngan'||f==='rieng_tu'||f==='link'||f==='title')render();
+  if(f==='ngan')toast('Đã chuyển sang ngăn '+NGAN[v]+'.');
+});
+document.addEventListener('input',function(e){if(e.target.id==='lq'){V.lq=e.target.value;render()}});
+
 var IC={
   gom:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/>',
   'hom-nay':'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
@@ -2154,7 +2371,7 @@ var HERO={
   'uu-tien':['Làm gì trước','Việc được chia thành 4 ô theo mức gấp và quan trọng. Bấm vào tên việc để đổi mức.'],
   content:['Quản lý nội dung','Mọi dự án và kênh ở một chỗ: lịch đăng theo tháng, tuần, ngày, quy trình 6 bước từ ý tưởng đến đã đăng, caption và tài liệu của từng bài.'],
   arc:['Lock in','Về quê để tu thân. Nhịp ngủ, học và lời nhắc mỗi ngày cho đến Tết. Chưa muộn, chỉ cần bắt đầu và giữ đều.'],
-  hoc:['Thời khóa biểu','Ghi lịch học cố định, khóa học định đăng ký, buổi tự học và việc khác. Ứng dụng xếp vào bảng theo thứ, giờ, ngày và báo khi trùng hoặc quá dày.']
+  hoc:['Học','Thư viện những gì chị đã học, leo từng nấc Biết, Hiểu, Dùng mỗi ngày 20 phút, cùng thời khóa biểu lịch học và buổi tự học.']
 };
 function hero(k){
   var H=HERO[k],chips=homeStats(k).slice(0,2).map(function(r){return '<div class="h-chip"><b>'+r[1]+'</b><span>'+r[0]+'</span></div>'}).join('');
@@ -2175,7 +2392,7 @@ function render(){
   else if(V.tab==='tuan')renderWeek();
   else if(V.tab==='uu-tien')renderMatrix();
   else if(V.tab==='content')renderContent();
-  else if(V.tab==='hoc')renderTkb();
+  else if(V.tab==='hoc')renderHoc();
   else if(V.tab==='arc')renderArc();
   else if(V.tab==='home')renderHome();
   tagFx();
@@ -2185,7 +2402,7 @@ function go(tab){V.tab=tab;try{history.replaceState(null,'','#'+tab)}catch(e){lo
 
 /* ---------- Cửa sổ nhập ---------- */
 function toast(msg){var t=$('#toast');t.textContent=msg;clearTimeout(toast.t);toast.t=setTimeout(function(){t.textContent=''},4200)}
-function closeModal(){$('#modal').innerHTML=''}
+function closeModal(){$('#modal').innerHTML='';V.fromIdea=null}
 function sheet(inner){$('#modal').innerHTML='<div class="scrim" data-a="scrim"><div class="sheet" role="dialog" aria-modal="true">'+inner+'</div></div>'}
 
 function taskForm(id,preset){
@@ -2238,6 +2455,8 @@ document.addEventListener('click',function(e){
   if(a==='scrim'){if(e.target===b)closeModal();return}
   if(remClick(a,b,id,e))return;
   if(ctClick(a,b,id))return;
+  if(a==='gotkb'||a==='savelearn'||a==='tkbgo'||a==='studyplace')V.hoc='tkb';
+  if(libClick(a,b,id))return;
   if(a==='tab'){go(b.dataset.t)}
   else if(a==='close'){closeModal()}
   else if(a==='parse'){
@@ -2263,7 +2482,7 @@ document.addEventListener('click',function(e){
     var rv=$('#fRem').value,rms=rv?new Date(rv).getTime():null;vals.remind=(rms&&!isNaN(rms))?rms:null;if(vals.remind)vals.noRem=false;
     if(vals.time&&!vals.date)vals.date=TODAY;
     if(id){t=find(id);if(t){Object.assign(t,vals);delete t.ex}}
-    else S.tasks.push(Object.assign({id:uid(),done:false},vals));
+    else{var nt=Object.assign({id:uid(),done:false},vals);if(V.fromIdea){var ii=ideaOf(V.fromIdea);if(ii){nt.ideaId=ii.id;(ii.taskIds=ii.taskIds||[]).push(nt.id);lTouch(ii)}}S.tasks.push(nt);if(V.fromIdea)toast('Đã tạo việc từ ý trong thư viện. Việc này sẽ được nhắc như mọi việc khác.')}
     closeModal();persist();render();
   }
   else if(a==='deltask'){S.tasks=S.tasks.filter(function(x){return x.id!==id});closeModal();persist();render();toast('Đã xóa việc.')}
