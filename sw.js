@@ -1,5 +1,5 @@
 /* Gom Việc: file chạy nền. Giữ app mở được khi mất mạng và hiện thông báo nhắc việc. */
-const CACHE = 'gom-viec-v3';
+const CACHE = 'gom-viec-v4';
 const SHELL = ['./', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'icon-180.png'];
 
 self.addEventListener('install', (e) => {
@@ -22,7 +22,7 @@ self.addEventListener('fetch', (e) => {
   // Trang chính: lấy bản mới trên mạng trước, mất mạng mới dùng bản đã lưu.
   if (req.mode === 'navigate') {
     e.respondWith(
-      fetch(req)
+      fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' })
         .then((res) => {
           if (res.ok) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put('./', copy)); }
           return res;

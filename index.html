@@ -1652,23 +1652,30 @@ function remAt(k){
   return null;
 }
 /* Giờ nhắc đang có hiệu lực: giờ chị tự hẹn, hoặc giờ bắt đầu của việc đã xếp lịch */
+var isPost=function(t){return t.idea!==undefined};
+var remTitle=function(t){return isPost(t)?'Đăng bài: '+t.idea:t.title};
+function remPool(){return openTasks().concat(S.posts.filter(function(p){return p.status<5&&!p.ex}))}
+function findR(id){return find(id)||S.posts.filter(function(x){return x.id===id})[0]}
 function effRem(t){
   if(t.done||t.ex)return null;
+  var post=isPost(t);
+  if(post&&t.status>=5)return null;
   if(t.remind)return t.remind;
-  if(S.settings.autoRem!==false&&!t.noRem&&t.date&&t.time){
-    var a=t.date.split('-').map(Number),m=toMin(t.time),ms=new Date(a[0],a[1]-1,a[2],Math.floor(m/60),m%60).getTime();
+  var on=post?(S.settings.postRem!=='off'):(S.settings.autoRem!==false);
+  if(on&&!t.noRem&&t.date&&t.time){
+    var a=t.date.split('-').map(Number),m=toMin(t.time)-(post?(+S.settings.postRem||0):0),ms=new Date(a[0],a[1]-1,a[2],0,m).getTime();
     return ms<Date.now()-12*3600000?null:ms;
   }
   return null;
 }
 function remChip(t){
-  if(t.done)return '';
+  if(t.done||(isPost(t)&&t.status>=5))return '';
   var r=effRem(t);
   if(!r)return '<button class="rem add" data-a="snooze" data-id="'+t.id+'">'+BELL+'Nhắc</button>';
   var due=r<=Date.now();
   return '<button class="rem'+(due?' due':'')+'" data-a="snooze" data-id="'+t.id+'" aria-label="Đổi giờ nhắc">'+BELL+(due?'Đến giờ':remLabel(r))+'</button>';
 }
-function dueRem(){var n=Date.now();return openTasks().filter(function(t){var r=effRem(t);return r&&r<=n}).sort(function(a,b){return effRem(a)-effRem(b)})}
+function dueRem(){var n=Date.now();return remPool().filter(function(t){var r=effRem(t);return r&&r<=n}).sort(function(a,b){return effRem(a)-effRem(b)})}
 function waitGroup(t){var r=effRem(t);if(r&&r<=Date.now())return 0;var d=t.date||(r?ymd(new Date(r)):null);if(d&&d<TODAY)return 1;if(d===TODAY)return 2;if(d)return 3;return 4}
 var WG=['Đến giờ nhắc','Quá hạn','Hôm nay','Sắp tới','Chưa có ngày'];
 var WF=[['all','Tất cả'],['viec','Công việc'],['hoc','Học'],['tuonglai','Tương lai'],['canhan','Cá nhân']];
@@ -1713,22 +1720,22 @@ function setBadge(){
   if(!inFrame)document.title=(n?'('+n+') ':'')+'Gom Việc';
 }
 function snoozeSheet(id){
-  var t=find(id);if(!t)return;
+  var t=findR(id);if(!t)return;
   var r=effRem(t),late=new Date().getHours()>=20;
   var opts=[['5','5 phút nữa'],['10','10 phút nữa'],['30','30 phút nữa'],['60','1 giờ nữa'],['toi','Tối nay'],['mai','Sáng mai'],['2ngay','2 ngày nữa'],['tuan','Tuần sau']].filter(function(x){return !(late&&x[0]==='toi')});
-  sheet('<h2>Nhắc lại lúc nào?</h2><p class="muted small" style="margin:-8px 0 12px">'+esc(t.title)+(r?'. Đang hẹn '+remLabel(r)+'.':'')+'</p>'+
+  sheet('<h2>Nhắc lại lúc nào?</h2><p class="muted small" style="margin:-8px 0 12px">'+esc(remTitle(t))+(r?'. Đang hẹn '+remLabel(r)+'.':'')+'</p>'+
     '<div class="snz">'+opts.map(function(x){return '<button class="btn" data-a="snz" data-id="'+id+'" data-k="'+x[0]+'">'+x[1]+'<small>'+remLabel(remAt(x[0]))+'</small></button>'}).join('')+'</div>'+
     '<h3>Hoặc chọn ngày giờ</h3><div class="wq" style="margin-top:0"><input type="datetime-local" id="zAt" value="'+dtLocal(remAt('mai'))+'" aria-label="Ngày giờ nhắc"><button class="btn primary" data-a="snzat" data-id="'+id+'">Hẹn</button></div>'+
-    '<div class="actions"><button class="btn" data-a="duedone" data-id="'+id+'">Xong việc này rồi</button>'+(r?'<button class="btn danger" data-a="remoff" data-id="'+id+'">Tắt nhắc việc này</button>':'')+'<button class="btn ghost" data-a="close" style="margin-left:auto">Đóng</button></div>');
+    '<div class="actions"><button class="btn" data-a="duedone" data-id="'+id+'">'+(isPost(t)?'Đã đăng bài này':'Xong việc này rồi')+'</button>'+(r?'<button class="btn danger" data-a="remoff" data-id="'+id+'">Tắt nhắc việc này</button>':'')+'<button class="btn ghost" data-a="close" style="margin-left:auto">Đóng</button></div>');
 }
 function alertSheet(){
   var due=dueRem();
   if(!due.length){R.inAlert=false;closeModal();return}
-  var h='<h2>Đến giờ rồi chị ơi</h2><p class="muted small" style="margin-top:-8px">'+(due.length>1?due.length+' việc đang chờ. Xong việc nào bấm việc đó, chưa làm được thì hẹn lại giờ.':'Làm xong thì bấm "Xong rồi". Chưa làm được thì hẹn lại giờ.')+'</p>';
+  var h='<h2>Đến giờ rồi chị ơi</h2><p class="muted small" style="margin-top:-8px">'+(due.length>1?due.length+' việc đang chờ. Xong việc nào bấm việc đó, chưa làm được thì hẹn lại giờ.':(due[0].idea!==undefined?'Đăng xong thì bấm "Đã đăng". Chưa đăng được thì hẹn lại giờ.':'Làm xong thì bấm "Xong rồi". Chưa làm được thì hẹn lại giờ.'))+'</p>';
   due.slice(0,5).forEach(function(t){
-    h+='<div class="due-item"><b>'+esc(t.title)+'</b><div class="meta">'+chips(t)+'<span>hẹn '+remLabel(effRem(t))+'</span></div>'+
+    h+='<div class="due-item"><b>'+esc(remTitle(t))+'</b><div class="meta">'+(isPost(t)?pchip(projOf(t.proj))+'<span class="chip">'+esc(t.plat)+'</span>'+(t.time?'<span>giờ đăng '+hLabel2(t.time)+'</span>':''):chips(t))+'<span>hẹn '+remLabel(effRem(t))+'</span></div>'+
       ((t.snz||0)>=3?'<p class="small muted" style="margin-top:6px">Việc này đã hẹn lại '+t.snz+' lần. Chị thử làm 5 phút đầu thôi, hoặc xóa nếu không còn cần.</p>':'')+
-      '<div class="actions"><button class="btn primary sm" data-a="duedone" data-id="'+t.id+'">Xong rồi</button><button class="btn sm" data-a="snz" data-k="5" data-id="'+t.id+'">5 phút nữa</button><button class="btn sm" data-a="snz" data-k="10" data-id="'+t.id+'">10 phút nữa</button><button class="btn sm" data-a="snooze" data-id="'+t.id+'">Lúc khác</button></div></div>';
+      '<div class="actions"><button class="btn primary sm" data-a="duedone" data-id="'+t.id+'">'+(isPost(t)?'Đã đăng':'Xong rồi')+'</button>'+(isPost(t)?'<button class="btn sm" data-a="postedit" data-id="'+t.id+'">Xem caption</button>':'')+'<button class="btn sm" data-a="snz" data-k="5" data-id="'+t.id+'">5 phút nữa</button><button class="btn sm" data-a="snz" data-k="10" data-id="'+t.id+'">10 phút nữa</button><button class="btn sm" data-a="snooze" data-id="'+t.id+'">Lúc khác</button></div></div>';
   });
   if(due.length>5)h+='<p class="small muted" style="margin-top:10px">Còn '+(due.length-5)+' việc nữa, hiện ra sau khi chị xử lý các việc trên.</p>';
   h+='<div class="actions"><button class="btn" data-a="close">Để sau, 10 phút nữa nhắc lại</button>'+(due.length>1?'<button class="btn" data-a="snzall" data-k="mai">Dời hết sang sáng mai</button>':'')+'</div>';
@@ -1736,14 +1743,14 @@ function alertSheet(){
 }
 function snoozeTo(ids,ms){
   var again=R.inAlert;
-  ids.forEach(function(id){var t=find(id);if(t){t.remind=ms;t.noRem=false;t.snz=(t.snz||0)+1;delete R.seen[id]}});
+  ids.forEach(function(id){var t=findR(id);if(t){t.remind=ms;t.noRem=false;t.snz=(t.snz||0)+1;delete R.seen[id]}});
   closeModal();persist();render();
   toast('Đã hẹn. App sẽ nhắc lúc '+remLabel(ms)+'.');
   if(again&&dueRem().length)alertSheet();else R.inAlert=false;
 }
 function sysNotify(list){
   if(hubOn()||!('Notification' in window)||Notification.permission!=='granted'||!document.hidden)return;
-  var title='Đến giờ: '+list[0].title,opt={body:list.length>1?('Và '+(list.length-1)+' việc khác đang chờ.'):'Bấm để đánh dấu xong hoặc hẹn lại giờ.',tag:'gv-due',renotify:true,icon:'icon-192.png'};
+  var title='Đến giờ: '+remTitle(list[0]),opt={body:list.length>1?('Và '+(list.length-1)+' việc khác đang chờ.'):'Bấm để đánh dấu xong hoặc hẹn lại giờ.',tag:'gv-due',renotify:true,icon:'icon-192.png'};
   if(navigator.serviceWorker&&navigator.serviceWorker.controller)navigator.serviceWorker.ready.then(function(reg){reg.showNotification(title,opt)}).catch(function(){});
   else try{new Notification(title,opt)}catch(e){}
 }
@@ -1757,7 +1764,7 @@ function tick(force){
   if(fresh.length)sysNotify(fresh);
   if(!$('#modal').firstChild){refreshWait();alertSheet()}
   else if(R.inAlert)alertSheet();
-  else if(fresh.length)toast('Đến giờ: '+fresh[0].title);
+  else if(fresh.length)toast('Đến giờ: '+remTitle(fresh[0]));
 }
 function iosGuide(){
   sheet('<h2>Đưa Gom Việc ra màn hình chính iPhone</h2><ol class="guide"><li>Mở trang này bằng Safari.</li><li>Bấm nút Chia sẻ, hình ô vuông có mũi tên hướng lên, ở thanh dưới.</li><li>Kéo xuống và chọn "Thêm vào MH chính".</li><li>Mở Gom Việc từ biểu tượng mới ngoài màn hình chính.</li><li>Bấm "Bật thông báo" ngay trong bảng việc đang chờ.</li></ol><p class="small muted" style="margin-top:10px">iPhone cần iOS 16.4 trở lên. Số việc đang chờ sẽ hiện trên biểu tượng app.</p><div class="actions"><button class="btn primary" data-a="close">Đã hiểu</button></div>');
@@ -1772,7 +1779,7 @@ function hubReq(m,p,body){
   var hd={'Authorization':'Bearer '+HC};if(body)hd['Content-Type']='application/json';
   return fetch(HUB+p,{method:m,headers:hd,body:body?JSON.stringify(body):undefined});
 }
-function remList(){return openTasks().map(function(t){var r=effRem(t);return r?{id:t.id,title:t.title,at:r}:null}).filter(Boolean).slice(0,300)}
+function remList(){return remPool().map(function(t){var r=effRem(t);return r?{id:t.id,title:remTitle(t),at:r}:null}).filter(Boolean).slice(0,300)}
 function hubAdopt(d,say){
   if(!d||!d.state)return;
   S=fix(d.state);setBase(d.updated);try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}
@@ -1851,15 +1858,15 @@ function remClick(a,b,id,e){
     snoozeTo([id],ms);
   }
   else if(a==='remoff'){
-    t=find(id);var ag=R.inAlert;
+    t=findR(id);var ag=R.inAlert;
     if(t){t.remind=null;t.noRem=true}
     closeModal();persist();render();toast('Đã tắt nhắc cho việc này.');
     if(ag&&dueRem().length)alertSheet();else R.inAlert=false;
   }
   else if(a==='duedone'){
-    t=find(id);var ag2=R.inAlert;
-    if(t){t.done=true;t.doneAt=Date.now()}
-    closeModal();persist();render();toast('Xong một việc. Chị làm tốt lắm.');
+    t=findR(id);var ag2=R.inAlert;
+    if(t&&isPost(t)){t.status=5;t.remind=null}else if(t){t.done=true;t.doneAt=Date.now()}
+    closeModal();persist();render();toast(t&&isPost(t)?'Đã chuyển bài sang "Đã đăng".':'Xong một việc. Chị làm tốt lắm.');
     if(ag2&&dueRem().length)alertSheet();else R.inAlert=false;
   }
   else if(a==='rempick'){var k=b.dataset.k,f=$('#fRem');if(f)f.value=k==='off'?'':dtLocal(remAt(k))}
@@ -1934,7 +1941,7 @@ function isLate(p){return p.status<5&&p.date&&(p.date<TODAY||(p.date===TODAY&&p.
 function pmeta(p,noProj){
   return (noProj?'':pchip(projOf(p.proj)))+'<span class="chip">'+esc(p.plat)+'</span>'+(p.fmt?'<span class="chip">'+esc(p.fmt)+'</span>':'')+
     (p.date?'<span>'+dLabel(p.date)+(p.time?' · '+hLabel2(p.time):'')+'</span>':'<span>Chưa có ngày</span>')+(p.owner?'<span>'+esc(p.owner)+'</span>':'')+
-    (isLate(p)?'<span class="chip hot">Trễ hạn</span>':'');
+    (isLate(p)?'<span class="chip hot">Trễ hạn</span>':'')+remChip(p);
 }
 function hLabel2(t){var a=t.split(':');return (+a[0])+'h'+(a[1]==='00'?'':a[1])}
 
@@ -2051,6 +2058,7 @@ function postForm(id,preset){
     '<label class="f">Định dạng<select id="qFmt">'+opt(FMT,p.fmt||'Bài viết')+'</select></label>'+
     '<label class="f">Ngày đăng<input type="date" id="qDate" value="'+(p.date||'')+'"></label>'+
     '<label class="f">Giờ đăng<input type="time" id="qTime" value="'+(p.time||'')+'"></label></div>'+
+    '<p class="small muted">Bài có ngày và giờ đăng sẽ được nhắc theo mục "Nhắc giờ đăng bài" trong Cài đặt.</p>'+
     '<label class="f">Người phụ trách<input type="text" id="qOwn" value="'+esc(p.owner||'')+'" list="ownList" autocomplete="off"><datalist id="ownList">'+owners().map(function(o){return '<option value="'+esc(o)+'">'}).join('')+'</datalist></label>'+
     '<label class="f">Caption<textarea id="qCap" rows="4">'+esc(p.caption||'')+'</textarea></label>'+
     '<label class="f">Nội dung, kịch bản<textarea id="qBody" rows="5">'+esc(p.body||'')+'</textarea></label>'+
@@ -2094,7 +2102,7 @@ function ctClick(a,b,id){
     var lk=$('#qLink').value.trim();if(lk&&!/^https?:\/\//i.test(lk))lk='https://'+lk;
     var v={idea:t,proj:$('#qProj').value,status:+$('#qStat').value,plat:$('#qPlat').value,fmt:$('#qFmt').value,date:$('#qDate').value||null,time:$('#qTime').value||null,owner:$('#qOwn').value.trim(),caption:$('#qCap').value,body:$('#qBody').value,link:lk,note:$('#qNote').value};
     if(v.time&&!v.date){toast('Chị chọn ngày đăng trước khi chọn giờ nhé.');return true}
-    if(id){p=S.posts.filter(function(x){return x.id===id})[0];if(p){Object.assign(p,v);delete p.ex}}
+    if(id){p=S.posts.filter(function(x){return x.id===id})[0];if(p){if(p.date!==v.date||p.time!==v.time){p.remind=null;p.noRem=false}Object.assign(p,v);delete p.ex}}
     else S.posts.push(Object.assign({id:uid()},v));
     closeModal();persist();toast('Đã lưu bài.');
   }
@@ -2216,6 +2224,7 @@ function settingsForm(){
     '<label class="f">Chuyển động 3D khi lướt chuột<select id="sFx"><option value="auto"'+(FX.pref==='auto'?' selected':'')+'>Tự động theo thiết bị</option><option value="on"'+(FX.pref==='on'?' selected':'')+'>Luôn bật</option><option value="off"'+(FX.pref==='off'?' selected':'')+'>Tắt (dịu mắt hơn)</option></select></label></div>'+
     '<p class="small muted" style="margin:10px 0">Giờ nghỉ trưa 12:00 đến 13:30 luôn được chừa trống. Chủ nhật chỉ xếp việc gấp.</p>'+
     '<div class="checks" style="margin:12px 0 4px"><label><input type="checkbox" id="sAuto"'+(s.autoRem!==false?' checked':'')+'>Tự báo khi đến giờ bắt đầu của việc đã có giờ</label></div>'+
+    '<label class="f" style="max-width:320px">Nhắc giờ đăng bài (bài có ngày và giờ đăng)<select id="sPost">'+[['0','Đúng giờ đăng'],['15','Trước 15 phút'],['30','Trước 30 phút'],['60','Trước 1 giờ'],['off','Không nhắc']].map(function(x){return '<option value="'+x[0]+'"'+(String(S.settings.postRem==null?'0':S.settings.postRem)===x[0]?' selected':'')+'>'+x[1]+'</option>'}).join('')+'</select></label>'+
     hubSettingsHtml()+
     '<div class="actions"><button class="btn primary" data-a="savesettings">Lưu</button><button class="btn" data-a="close">Hủy</button></div>');
 }
@@ -2378,7 +2387,7 @@ document.addEventListener('click',function(e){
   else if(a==='savesettings'){
     var s1=parseInt($('#sStart').value,10),s2=parseInt($('#sEnd').value,10),s3=parseInt($('#sCap').value,10);
     if(!(s1>=0&&s2>s1&&s3>=1)){toast('Giờ kết thúc phải sau giờ bắt đầu.');return}
-    Object.assign(S.settings,{start:s1,end:s2,cap:s3,maxDay:Math.max(2,parseInt($('#sMax').value,10)||9),autoRem:$('#sAuto').checked});if($('#sAm')){S.settings.am=$('#sAm').value||'';S.settings.pm=$('#sPm').value||''}FX.pref=$('#sFx').value;try{localStorage.setItem('gv.fx',FX.pref)}catch(e){}fxApply();closeModal();persist();render();
+    Object.assign(S.settings,{start:s1,end:s2,cap:s3,maxDay:Math.max(2,parseInt($('#sMax').value,10)||9),autoRem:$('#sAuto').checked,postRem:$('#sPost').value});if($('#sAm')){S.settings.am=$('#sAm').value||'';S.settings.pm=$('#sPm').value||''}FX.pref=$('#sFx').value;try{localStorage.setItem('gv.fx',FX.pref)}catch(e){}fxApply();closeModal();persist();render();
   }
   else if(a==='clearex'){
     S.fixed=S.fixed.filter(function(x){return !x.ex});
