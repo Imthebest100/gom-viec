@@ -486,6 +486,19 @@ input[type=url]{width:100%;min-height:42px;padding:8px 10px;border:1px solid var
 details.panel summary{cursor:pointer;list-style-position:inside}
 .panel textarea,.panel input[type=search]{font:inherit}
 .panel textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);resize:vertical;line-height:1.5}
+/* ---------- Nhãn và kết quả bài đăng ---------- */
+.chip.vt{background:#D9C8F5;color:#2E1F4F}.chip.fe{background:#FFD9A8;color:#4A2E08}
+.chip.res{background:var(--surface2);color:var(--ink);white-space:normal}
+button.chip{border:0;cursor:pointer}
+.resbox{border:1px solid color-mix(in srgb,var(--sec) 40%,var(--line));background:color-mix(in srgb,var(--sec) 7%,var(--surface));border-radius:12px;padding:12px}
+.form.four{display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (min-width:560px){.form.four{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.rtab{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px;min-width:480px}
+.rtab caption{text-align:left;font-weight:600;padding-bottom:4px}
+.rtab th,.rtab td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+.rtab th:first-child,.rtab td:first-child{text-align:left;white-space:normal}
+.rtab th{font-weight:600;color:var(--muted);font-size:12px}
+.rtab td.best{background:#CDEBD9;color:#1D5C3C;font-weight:700}
 </style>
 </head>
 <body>
@@ -1940,8 +1953,16 @@ function remInit(){
 
 /* ---------- Quản lý nội dung: dự án, lịch đăng, quy trình, bảng số liệu ---------- */
 var FMT=['Bài viết','Ảnh đơn','Album, carousel','Video ngắn','Video dài','Livestream','Story'];
+var VTYPE=['Chuyên gia tư vấn','Góc nhìn thứ nhất (POV)','Khách nói cảm nhận','Trend'];
+var FEAR0=['Sợ đau','Sợ màu đậm','Sợ tốn tiền'];
+var RES=[['view','Lượt xem'],['save','Lượt lưu'],['share','Lượt chia sẻ'],['inbox','Tin nhắn hỏi về bài']];
+function fears(){var o={};FEAR0.forEach(function(f){o[f]=1});S.posts.forEach(function(p){if(p.fear)o[p.fear]=1});return Object.keys(o)}
+var fmtN=function(n){return Math.round(n).toLocaleString('vi-VN')};
+function hasRes(p){return !!(p.res&&p.res.at)}
+function resDue(p){return p.status===5&&!!p.date&&!hasRes(p)&&addDays(p.date,3)<=TODAY}
+function resLine(p){if(!hasRes(p))return '';return '<span class="chip res">'+RES.map(function(r){return fmtN(p.res[r[0]]||0)+' '+r[1].replace('Lượt ','').replace(' hỏi về bài','').toLowerCase()}).join(' · ')+'</span>'}
 var PAL={dao:['#F7BBA4','#A0472B','Đào'],troi:['#A7C7E7','#2F5F8F','Xanh trời'],tim:['#B9B9FF','#4646B0','Tím nhạt'],bh:['#B3E2D7','#22705C','Bạc hà'],bo:['#FFEE99','#7A6200','Vàng bơ'],mo:['#FFD9A8','#8A5A14','Mơ'],hong:['#F5C2E0','#A33A78','Hồng'],san:['#FFB3B3','#B33A3A','San hô'],bien:['#CDE7FB','#2C6E9E','Xanh biển nhạt']};
-V.ct={view:'board',cal:'month',proj:'all',plat:'',stat:'',own:'',ref:TODAY};
+V.ct={view:'board',cal:'month',proj:'all',plat:'',stat:'',own:'',vt:'',fear:'',res:false,ref:TODAY};
 var CV={board:'Tiến độ',cal:'Lịch đăng',list:'Danh sách'};
 function projOf(id){return S.projects.filter(function(p){return p.id===id})[0]||S.projects[0]}
 function pcs(p){var c=PAL[(p&&p.color)||'dao']||PAL.dao;return '--pp:'+c[0]+';--pd:'+c[1]}
@@ -1950,18 +1971,31 @@ function owners(){var o={};S.posts.forEach(function(p){if(p.owner)o[p.owner]=1})
 function postsF(skipStat){
   var c=V.ct;
   return S.posts.filter(function(p){
-    return (c.proj==='all'||p.proj===c.proj)&&(!c.plat||p.plat===c.plat)&&(skipStat||c.stat===''||p.status===+c.stat)&&(!c.own||(p.owner||'')===c.own);
+    return (c.proj==='all'||p.proj===c.proj)&&(!c.plat||p.plat===c.plat)&&(skipStat||c.stat===''||p.status===+c.stat)&&(!c.own||(p.owner||'')===c.own)&&(!c.vt||p.vtype===c.vt)&&(!c.fear||p.fear===c.fear)&&(!c.res||resDue(p));
   });
 }
 var pKey=function(p){return (p.date||'9999')+(p.time||'99')};
 function isLate(p){return p.status<5&&p.date&&(p.date<TODAY||(p.date===TODAY&&p.time&&toMin(p.time)<nowMin()))}
 function pmeta(p,noProj){
-  return (noProj?'':pchip(projOf(p.proj)))+'<span class="chip">'+esc(p.plat)+'</span>'+(p.fmt?'<span class="chip">'+esc(p.fmt)+'</span>':'')+
+  return (noProj?'':pchip(projOf(p.proj)))+'<span class="chip">'+esc(p.plat)+'</span>'+(p.fmt?'<span class="chip">'+esc(p.fmt)+'</span>':'')+(p.vtype?'<span class="chip vt">'+esc(p.vtype)+'</span>':'')+(p.fear?'<span class="chip fe">'+esc(p.fear)+'</span>':'')+
     (p.date?'<span>'+dLabel(p.date)+(p.time?' · '+hLabel2(p.time):'')+'</span>':'<span>Chưa có ngày</span>')+(p.owner?'<span>'+esc(p.owner)+'</span>':'')+
-    (isLate(p)?'<span class="chip hot">Trễ hạn</span>':'')+remChip(p);
+    (isLate(p)?'<span class="chip hot">Trễ hạn</span>':'')+(resDue(p)?'<button class="chip hot" data-a="postedit" data-id="'+p.id+'">Cần điền kết quả</button>':'')+resLine(p)+remChip(p);
 }
 function hLabel2(t){var a=t.split(':');return (+a[0])+'h'+(a[1]==='00'?'':a[1])}
 
+function resTable(all){
+  var done=all.filter(hasRes);
+  if(!done.length)return '<p class="small muted" style="margin-top:12px">Sau khi chị điền kết quả cho vài bài, app sẽ so sánh dạng video và nỗi lo nào kéo được nhiều lượt lưu và tin nhắn nhất.</p>';
+  var tb=function(title,key,keys){
+    var rows=keys.map(function(k){var ps=done.filter(function(p){return (p[key]||'')===k});if(!ps.length)return null;var avg={};RES.forEach(function(r){avg[r[0]]=ps.reduce(function(s,p){return s+(+p.res[r[0]]||0)},0)/ps.length});return {k:k||'Chưa gắn nhãn',n:ps.length,avg:avg}}).filter(Boolean);
+    if(!rows.length)return '';
+    var best={};RES.forEach(function(r){best[r[0]]=Math.max.apply(null,rows.map(function(x){return x.avg[r[0]]}))});
+    return '<div class="scroll-x"><table class="rtab"><caption>'+title+'</caption><thead><tr><th>Nhãn</th><th>Số bài</th>'+RES.map(function(r){return '<th>'+r[1].replace(' hỏi về bài','')+' TB</th>'}).join('')+'</tr></thead><tbody>'+
+      rows.map(function(x){return '<tr><td>'+esc(x.k)+'</td><td>'+x.n+'</td>'+RES.map(function(r){var v=x.avg[r[0]];return '<td'+(rows.length>1&&v===best[r[0]]&&v>0?' class="best"':'')+'>'+fmtN(v)+'</td>'}).join('')+'</tr>'}).join('')+'</tbody></table></div>';
+  };
+  return '<h3 style="margin-top:16px">Kết quả theo nhãn ('+done.length+' bài đã điền)</h3><p class="small muted">TB là trung bình mỗi bài. Ô tô đậm là nhãn cao nhất ở cột đó. Ít bài thì con số còn dao động nhiều, chị đừng vội kết luận.</p>'+
+    tb('Theo dạng video','vtype',VTYPE.concat(['']))+tb('Theo nỗi lo của khách','fear',fears().concat(['']));
+}
 function ctDash(){
   var all=S.posts.filter(function(p){return V.ct.proj==='all'||p.proj===V.ct.proj});
   var m0=TODAY.slice(0,8)+'01',m1=TODAY.slice(0,8)+'31',w7=addDays(TODAY,6);
@@ -1973,6 +2007,9 @@ function ctDash(){
     '<div class="cst"><b>'+soon+'</b><span>Sắp đăng trong 7 ngày</span></div>'+
     '<div class="cst'+(late?' bad':'')+'"><b>'+late+'</b><span>Bài trễ hạn</span></div>'+
     '<div class="cst"><b>'+posted+'</b><span>Đã đăng tháng này</span></div></div>';
+  var due=all.filter(resDue);
+  if(due.length)h+='<div class="hint"><span><b>'+due.length+' bài đã đăng hơn 3 ngày chưa điền kết quả.</b> Chị mở TikTok hoặc Facebook xem số liệu rồi ghi vào bài.</span><button class="btn sm primary" data-a="ctres">Xem các bài này</button></div>';
+  h+=resTable(all);
   h+='<h3 style="margin-top:16px">Tiến độ từng dự án tháng '+(+TODAY.slice(5,7))+'</h3>';
   S.projects.forEach(function(pr){
     var ps=S.posts.filter(function(p){return p.proj===pr.id&&p.date&&p.date>=m0&&p.date<=m1}),dn=ps.filter(function(p){return p.status===5}).length,pct=ps.length?Math.round(dn/ps.length*100):0;
@@ -1989,7 +2026,8 @@ function ctControls(){
     (c.proj!=='all'?'<button data-a="projedit" data-id="'+c.proj+'">Sửa dự án</button>':'')+'</div>';
   var ow=owners();
   h+='<div class="form three" style="margin-top:6px">'+sel('fPlat','Nền tảng',PLAT.map(function(p){return [p,p]}),c.plat)+sel('fStat','Trạng thái',STAT.map(function(s,i){return [i,s]}),c.stat)+
-    (ow.length?sel('fOwn','Người phụ trách',ow.map(function(o){return [o,o]}),c.own):'')+'</div>';
+    (ow.length?sel('fOwn','Người phụ trách',ow.map(function(o){return [o,o]}),c.own):'')+sel('fVt','Dạng video',VTYPE.map(function(x){return [x,x]}),c.vt)+sel('fFear','Nỗi lo của khách',fears().map(function(x){return [x,x]}),c.fear)+'</div>'+
+    (c.res?'<div class="hint"><span>Đang xem các bài cần điền kết quả.</span><button class="btn sm" data-a="ctres">Bỏ lọc này</button></div>':'');
   h+='<div class="wq"><input type="text" id="pIdea" placeholder="Ý tưởng bài mới, ví dụ: Mẹo giữ ẩm da mùa khô" autocomplete="off" aria-label="Ý tưởng bài mới"><button class="btn primary" data-a="postadd">Thêm</button><button class="btn" data-a="postnew">Bài đầy đủ</button></div>';
   h+='<div class="seg" role="group" aria-label="Cách xem">'+Object.keys(CV).map(function(k){return '<button data-a="ctview" data-v="'+k+'" aria-current="'+(c.view===k)+'">'+CV[k]+'</button>'}).join('')+'</div>';
   return h+'</div>';
@@ -2062,6 +2100,11 @@ function renderContent(){
   $('#v-content').innerHTML=hero('content')+h;
   if(keep)$('#pIdea').value=keep;
 }
+function resForm(p){
+  var r=p.res||{},from=p.date?addDays(p.date,3):null;
+  return '<div class="resbox"><b>Kết quả sau 3 ngày</b><p class="small muted" style="margin:2px 0 8px">'+(from?(from>TODAY?'Điền từ '+dLabel(from)+'. Số liệu lấy trong phần thống kê của TikTok hoặc Facebook.':'Số liệu lấy trong phần thống kê của TikTok hoặc Facebook.'):'Bài chưa có ngày đăng.')+(hasRes(p)?' Đã điền ngày '+dLabel(ymd(new Date(p.res.at)))+'.':'')+'</p>'+
+    '<div class="form four">'+RES.map(function(x){return '<label class="f">'+x[1]+'<input type="number" min="0" inputmode="numeric" id="qR_'+x[0]+'" value="'+(r[x[0]]!=null?r[x[0]]:'')+'"></label>'}).join('')+'</div></div>';
+}
 function postForm(id,preset){
   var p=id?S.posts.filter(function(x){return x.id===id})[0]:Object.assign({idea:'',proj:V.ct.proj!=='all'?V.ct.proj:S.projects[0].id,plat:'Facebook',fmt:'Bài viết',status:0,date:'',time:'',owner:'Tôi',caption:'',body:'',link:'',note:''},preset||{});
   if(!p)return;
@@ -2069,10 +2112,13 @@ function postForm(id,preset){
   var link=/^https?:\/\//i.test(p.link||'')?'<a class="small" href="'+esc(p.link)+'" target="_blank" rel="noopener">Mở tài liệu</a>':'';
   sheet('<h2>'+(id?'Sửa bài':'Bài mới')+'</h2><div class="form">'+
     '<label class="f">Tiêu đề hoặc ý tưởng<input type="text" id="qTitle" value="'+esc(p.idea)+'" autocomplete="off"></label>'+
+    (id&&p.status===5?resForm(p):'')+
     '<div class="form two"><label class="f">Dự án<select id="qProj">'+S.projects.map(function(x){return '<option value="'+x.id+'"'+(x.id===p.proj?' selected':'')+'>'+esc(x.name)+'</option>'}).join('')+'</select></label>'+
     '<label class="f">Trạng thái<select id="qStat">'+opt(STAT,p.status,true)+'</select></label>'+
     '<label class="f">Nền tảng<select id="qPlat">'+opt(PLAT.indexOf(p.plat)<0?PLAT.concat([p.plat]):PLAT,p.plat)+'</select></label>'+
     '<label class="f">Định dạng<select id="qFmt">'+opt(FMT,p.fmt||'Bài viết')+'</select></label>'+
+    '<label class="f">Dạng video<select id="qVt"><option value="">Chưa chọn</option>'+opt(VTYPE,p.vtype||'')+'</select></label>'+
+    '<label class="f">Nỗi lo của khách mà bài nhắm tới<input type="text" id="qFear" value="'+esc(p.fear||'')+'" list="fearList" placeholder="Ví dụ: Sợ đau" autocomplete="off"><datalist id="fearList">'+fears().map(function(o){return '<option value="'+esc(o)+'">'}).join('')+'</datalist></label>'+
     '<label class="f">Ngày đăng<input type="date" id="qDate" value="'+(p.date||'')+'"></label>'+
     '<label class="f">Giờ đăng<input type="time" id="qTime" value="'+(p.time||'')+'"></label></div>'+
     '<p class="small muted">Bài có ngày và giờ đăng sẽ được nhắc theo mục "Nhắc giờ đăng bài" trong Cài đặt.</p>'+
@@ -2097,7 +2143,8 @@ function projForm(id){
 }
 function ctClick(a,b,id){
   var p;
-  if(a==='ctview'){V.ct.view=b.dataset.v}
+  if(a==='ctres'){V.ct.res=!V.ct.res;if(V.ct.res){V.ct.view='list';V.ct.stat=''}}
+  else if(a==='ctview'){V.ct.view=b.dataset.v}
   else if(a==='ctproj'){V.ct.proj=b.dataset.p}
   else if(a==='calmode'){V.ct.cal=b.dataset.m}
   else if(a==='calnav'){
@@ -2119,6 +2166,9 @@ function ctClick(a,b,id){
     var lk=$('#qLink').value.trim();if(lk&&!/^https?:\/\//i.test(lk))lk='https://'+lk;
     var v={idea:t,proj:$('#qProj').value,status:+$('#qStat').value,plat:$('#qPlat').value,fmt:$('#qFmt').value,date:$('#qDate').value||null,time:$('#qTime').value||null,owner:$('#qOwn').value.trim(),caption:$('#qCap').value,body:$('#qBody').value,link:lk,note:$('#qNote').value};
     if(v.time&&!v.date){toast('Chị chọn ngày đăng trước khi chọn giờ nhé.');return true}
+    v.vtype=$('#qVt').value;v.fear=$('#qFear').value.trim();
+    if($('#qR_view')){var rr={},any=false;RES.forEach(function(x){var n=$('#qR_'+x[0]).value;if(n!==''){any=true;rr[x[0]]=Math.max(0,parseInt(n,10)||0)}});
+      if(any){var old=(S.posts.filter(function(x){return x.id===id})[0]||{}).res;rr.at=(old&&old.at)||Date.now();RES.forEach(function(x){if(rr[x[0]]==null)rr[x[0]]=0});v.res=rr}}
     if(id){p=S.posts.filter(function(x){return x.id===id})[0];if(p){if(p.date!==v.date||p.time!==v.time){p.remind=null;p.noRem=false}Object.assign(p,v);delete p.ex}}
     else S.posts.push(Object.assign({id:uid()},v));
     closeModal();persist();toast('Đã lưu bài.');
@@ -2150,7 +2200,7 @@ function ctClick(a,b,id){
 }
 document.addEventListener('change',function(e){
   var k=e.target.dataset&&e.target.dataset.ct;if(!k)return;
-  if(k==='fPlat')V.ct.plat=e.target.value;else if(k==='fStat')V.ct.stat=e.target.value;else if(k==='fOwn')V.ct.own=e.target.value;
+  if(k==='fVt')V.ct.vt=e.target.value;else if(k==='fFear')V.ct.fear=e.target.value;else if(k==='fPlat')V.ct.plat=e.target.value;else if(k==='fStat')V.ct.stat=e.target.value;else if(k==='fOwn')V.ct.own=e.target.value;
   render();
 });
 
