@@ -536,6 +536,23 @@ button.chip{border:0;cursor:pointer}
 .rin{width:84px;min-height:36px;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);text-align:right}
 .tagc{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:13px;background:var(--surface)}
 .tagc button{border:0;background:none;padding:0 2px;font-size:15px;line-height:1;color:var(--muted);cursor:pointer}
+/* ---------- Ngày điền số liệu ---------- */
+.rb{display:inline-flex;align-items:center;border:0;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700;white-space:nowrap;cursor:pointer}
+.rb::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;margin-right:6px}
+.rb-late{background:#FFB3B3;color:#6B1414}.rb-today{background:#FFD9A8;color:#5A3200}.rb-soon{background:var(--surface2);color:var(--muted);font-weight:600}.rb-done{background:#CDEBD9;color:#1D5C3C;font-weight:600}
+.rstrip{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;background:var(--surface)}
+.rbox{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rbx{display:flex;flex-direction:column;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface2);font-size:13px;color:var(--ink);text-align:left}
+.rbx b{font-family:var(--font-display);font-size:24px;line-height:1.1}
+.rbx.rb-late,.rbx.rb-today{border-color:transparent}
+.rdue{background:var(--warn-bg);border-radius:12px;padding:12px;margin:10px 0;border:1px solid color-mix(in srgb,var(--warn) 35%,transparent)}
+.rdi{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;padding:7px 0;border-top:1px solid color-mix(in srgb,var(--warn) 20%,transparent)}
+.rdi .ttl{flex:1 1 180px;font-weight:600}
+.mp.rk,.wp.rk{background:#FFF1E0;color:#6B2E05;border:1.5px dashed #C2410C;border-left-width:1.5px;font-weight:700}
+.rk-late{background:#FFE1E1!important;border-color:#B33A3A!important;color:#6B1414!important}
+.lg-rk{background:#FFF1E0;color:#6B2E05;border:1.5px dashed #C2410C;border-left:1.5px dashed #C2410C}
+.dtab tr.r-late td{background:#FFE9E9}.dtab tr.r-today td{background:var(--warn-bg)}
+@media (max-width:600px){.mp.rk{border-width:0;background:#C2410C!important}}
 </style>
 </head>
 <body>
@@ -881,6 +898,8 @@ function renderToday(){
   h+='<div style="margin-top:12px"><div class="bar'+(load>capM?' over':'')+'"><i style="width:'+pct+'%"></i></div>'+
     '<p class="small muted" style="margin-top:6px">'+open.length+' việc, khoảng '+durLabel(load)+'. Còn trống khoảng '+durLabel(free)+' trong giờ làm.</p></div></div>';
   if(load>capM)h+='<div class="panel warn"><div class="head"><p class="small"><b>Ngày này hơi đầy</b> (hơn '+st.cap+' giờ việc). Chị có thể dời bớt việc không gấp sang ngày khác.</p><button class="btn sm" data-a="rebalance" data-date="'+d+'">Dời bớt giúp tôi</button></div></div>';
+  var rdl=S.posts.filter(function(p){var x=resState(p);return x&&x!=='done'&&(resDay(p)===d||(isToday&&x==='late'))}).sort(function(a,b){return resDay(a).localeCompare(resDay(b))});
+  if(rdl.length){h+='<div class="panel rdue"><div class="head"><h3 style="margin:0">Điền số liệu video</h3><button class="btn sm" data-a="godone">Mở trang Đã đăng</button></div><p class="small muted" style="margin:4px 0 6px">Mở TikTok hoặc Facebook xem lượt xem, lưu, chia sẻ, tin nhắn của video rồi ghi vào app.</p>';rdl.forEach(function(p){h+='<div class="rdi"><button class="ttl" data-a="postedit" data-id="'+p.id+'">'+esc(p.idea)+'</button>'+plchip(p.plat)+resBadge(p)+'</div>'});h+='</div>'}
   if(isToday){
     var late=openTasks().filter(function(t){return t.date&&t.date<TODAY});
     if(late.length){
@@ -1720,13 +1739,17 @@ function remAt(k){
 }
 /* Giờ nhắc đang có hiệu lực: giờ chị tự hẹn, hoặc giờ bắt đầu của việc đã xếp lịch */
 var isPost=function(t){return t.idea!==undefined};
-var remTitle=function(t){return isPost(t)?'Đăng bài: '+t.idea:t.title};
-function remPool(){return openTasks().concat(S.posts.filter(function(p){return p.status<5&&!p.ex}))}
+var remTitle=function(t){return isPost(t)?(t.status>=5?'Điền số liệu: ':'Đăng bài: ')+t.idea:t.title};
+function remPool(){return openTasks().concat(S.posts.filter(function(p){return !p.ex&&(p.status<5||(p.status===5&&!hasRes(p)))}))}
 function findR(id){return find(id)||S.posts.filter(function(x){return x.id===id})[0]}
 function effRem(t){
   if(t.done||t.ex)return null;
   var post=isPost(t);
-  if(post&&t.status>=5)return null;
+  if(post&&t.status>=5){
+    if(hasRes(t)||!t.date||t.noRem)return null;if(t.remind)return t.remind;
+    var rd=resDay(t).split('-').map(Number),rms=new Date(rd[0],rd[1]-1,rd[2],9,0).getTime();
+    return rms<Date.now()-12*3600000?null:rms;
+  }
   if(t.remind)return t.remind;
   var on=post?(S.settings.postRem!=='off'):(S.settings.autoRem!==false);
   if(on&&!t.noRem&&t.date&&t.time){
@@ -1762,6 +1785,8 @@ function waitHtml(){
   var now=open.filter(function(t){return waitGroup(t)<=2}).length;
   var h='<div class="panel wait" id="waitBoard"><div class="head"><div><h2>Việc đang chờ chị</h2><p class="muted small">'+
     (open.length?(open.length+' việc chưa xong'+(now?', trong đó '+now+' việc cần xử lý hôm nay':'')+'.'):'Không còn việc nào dở. Có việc mới thì gõ vào ô dưới.')+'</p></div></div>';
+  var rlx=resList();
+  if(rlx.length)h+='<div class="rdue"><div class="head"><b>'+rlx.length+' video cần điền số liệu</b><button class="btn sm" data-a="godone">Mở trang Đã đăng</button></div>'+rlx.slice(0,4).map(function(p){return '<div class="rdi"><button class="ttl" data-a="postedit" data-id="'+p.id+'">'+esc(p.idea)+'</button>'+resBadge(p)+'</div>'}).join('')+(rlx.length>4?'<p class="small muted">Và '+(rlx.length-4)+' video khác.</p>':'')+'</div>';
   h+='<div class="wq"><input type="text" id="wqIn" placeholder="Gõ nhanh: mai 9h gọi lại khách" autocomplete="off" aria-label="Thêm nhanh một việc"><button class="btn primary" data-a="wqadd">Thêm</button></div>';
   h+='<div class="wf" role="group" aria-label="Lọc theo loại việc">'+WF.map(function(x){var n=open.filter(function(t){return wfOk(t,x[0])}).length;return '<button data-a="wf" data-f="'+x[0]+'" aria-pressed="'+(f===x[0])+'">'+x[1]+' '+n+'</button>'}).join('')+'</div>';
   var max=V.wait.all?1e9:6,shown=0,g=-1;
@@ -1793,16 +1818,16 @@ function snoozeSheet(id){
   sheet('<h2>Nhắc lại lúc nào?</h2><p class="muted small" style="margin:-8px 0 12px">'+esc(remTitle(t))+(r?'. Đang hẹn '+remLabel(r)+'.':'')+'</p>'+
     '<div class="snz">'+opts.map(function(x){return '<button class="btn" data-a="snz" data-id="'+id+'" data-k="'+x[0]+'">'+x[1]+'<small>'+remLabel(remAt(x[0]))+'</small></button>'}).join('')+'</div>'+
     '<h3>Hoặc chọn ngày giờ</h3><div class="wq" style="margin-top:0"><input type="datetime-local" id="zAt" value="'+dtLocal(remAt('mai'))+'" aria-label="Ngày giờ nhắc"><button class="btn primary" data-a="snzat" data-id="'+id+'">Hẹn</button></div>'+
-    '<div class="actions"><button class="btn" data-a="duedone" data-id="'+id+'">'+(isPost(t)?'Đã đăng bài này':'Xong việc này rồi')+'</button>'+(r?'<button class="btn danger" data-a="remoff" data-id="'+id+'">Tắt nhắc việc này</button>':'')+'<button class="btn ghost" data-a="close" style="margin-left:auto">Đóng</button></div>');
+    '<div class="actions"><button class="btn" data-a="duedone" data-id="'+id+'">'+(isPost(t)?(t.status>=5?'Điền số liệu ngay':'Đã đăng bài này'):'Xong việc này rồi')+'</button>'+(r?'<button class="btn danger" data-a="remoff" data-id="'+id+'">Tắt nhắc việc này</button>':'')+'<button class="btn ghost" data-a="close" style="margin-left:auto">Đóng</button></div>');
 }
 function alertSheet(){
   var due=dueRem();
   if(!due.length){R.inAlert=false;closeModal();return}
-  var h='<h2>Đến giờ rồi chị ơi</h2><p class="muted small" style="margin-top:-8px">'+(due.length>1?due.length+' việc đang chờ. Xong việc nào bấm việc đó, chưa làm được thì hẹn lại giờ.':(due[0].idea!==undefined?'Đăng xong thì bấm "Đã đăng". Chưa đăng được thì hẹn lại giờ.':'Làm xong thì bấm "Xong rồi". Chưa làm được thì hẹn lại giờ.'))+'</p>';
+  var h='<h2>Đến giờ rồi chị ơi</h2><p class="muted small" style="margin-top:-8px">'+(due.length>1?due.length+' việc đang chờ. Xong việc nào bấm việc đó, chưa làm được thì hẹn lại giờ.':(due[0].idea!==undefined?(due[0].status>=5?'Bấm "Điền số liệu" để ghi lượt xem, lưu, chia sẻ, tin nhắn của video. Chưa rảnh thì hẹn lại giờ.':'Đăng xong thì bấm "Đã đăng". Chưa đăng được thì hẹn lại giờ.'):'Làm xong thì bấm "Xong rồi". Chưa làm được thì hẹn lại giờ.'))+'</p>';
   due.slice(0,5).forEach(function(t){
     h+='<div class="due-item"><b>'+esc(remTitle(t))+'</b><div class="meta">'+(isPost(t)?pchip(projOf(t.proj))+'<span class="chip">'+esc(t.plat)+'</span>'+(t.time?'<span>giờ đăng '+hLabel2(t.time)+'</span>':''):chips(t))+'<span>hẹn '+remLabel(effRem(t))+'</span></div>'+
       ((t.snz||0)>=3?'<p class="small muted" style="margin-top:6px">Việc này đã hẹn lại '+t.snz+' lần. Chị thử làm 5 phút đầu thôi, hoặc xóa nếu không còn cần.</p>':'')+
-      '<div class="actions"><button class="btn primary sm" data-a="duedone" data-id="'+t.id+'">'+(isPost(t)?'Đã đăng':'Xong rồi')+'</button>'+(isPost(t)?'<button class="btn sm" data-a="postedit" data-id="'+t.id+'">Xem caption</button>':'')+'<button class="btn sm" data-a="snz" data-k="5" data-id="'+t.id+'">5 phút nữa</button><button class="btn sm" data-a="snz" data-k="10" data-id="'+t.id+'">10 phút nữa</button><button class="btn sm" data-a="snooze" data-id="'+t.id+'">Lúc khác</button></div></div>';
+      '<div class="actions"><button class="btn primary sm" data-a="duedone" data-id="'+t.id+'">'+(isPost(t)?(t.status>=5?'Điền số liệu':'Đã đăng'):'Xong rồi')+'</button>'+(isPost(t)&&t.status<5?'<button class="btn sm" data-a="postedit" data-id="'+t.id+'">Xem caption</button>':'')+'<button class="btn sm" data-a="snz" data-k="5" data-id="'+t.id+'">5 phút nữa</button><button class="btn sm" data-a="snz" data-k="10" data-id="'+t.id+'">10 phút nữa</button><button class="btn sm" data-a="snooze" data-id="'+t.id+'">Lúc khác</button></div></div>';
   });
   if(due.length>5)h+='<p class="small muted" style="margin-top:10px">Còn '+(due.length-5)+' việc nữa, hiện ra sau khi chị xử lý các việc trên.</p>';
   h+='<div class="actions"><button class="btn" data-a="close">Để sau, 10 phút nữa nhắc lại</button>'+(due.length>1?'<button class="btn" data-a="snzall" data-k="mai">Dời hết sang sáng mai</button>':'')+'</div>';
@@ -1932,7 +1957,8 @@ function remClick(a,b,id,e){
   }
   else if(a==='duedone'){
     t=findR(id);var ag2=R.inAlert;
-    if(t&&isPost(t)){t.status=5;t.remind=null}else if(t){t.done=true;t.doneAt=Date.now()}
+    if(t&&isPost(t)&&t.status>=5){R.inAlert=false;postForm(t.id);return true}
+    if(t&&isPost(t)){t.status=5;t.remind=null;t.noRem=false}else if(t){t.done=true;t.doneAt=Date.now()}
     closeModal();persist();render();toast(t&&isPost(t)?'Đã chuyển bài sang "Đã đăng".':'Xong một việc. Chị làm tốt lắm.');
     if(ag2&&dueRem().length)alertSheet();else R.inAlert=false;
   }
@@ -2000,6 +2026,15 @@ function fears(){return uniq(FEAR0.concat(tagsOf('fear'),S.posts.map(function(p)
 var fmtN=function(n){return Math.round(n).toLocaleString('vi-VN')};
 function hasRes(p){return !!(p.res&&p.res.at)}
 function resDue(p){return p.status===5&&!!p.date&&!hasRes(p)&&addDays(p.date,3)<=TODAY}
+function resDay(p){return p.date?addDays(p.date,3):null}
+function resState(p){if(p.status!==5||!p.date||p.ex)return null;if(hasRes(p))return 'done';var d=resDay(p);return d<TODAY?'late':d===TODAY?'today':'soon'}
+function resBadge(p){
+  var st=resState(p);if(!st)return '';var d=resDay(p),n=Math.round((pYmd(TODAY)-pYmd(d))/864e5);
+  var t=st==='done'?'Đã điền số liệu':st==='late'?'Quá hạn điền số liệu '+n+' ngày':st==='today'?'Hôm nay điền số liệu':'Điền số liệu '+dLabel(d)+' (còn '+(-n)+' ngày)';
+  return '<button class="rb rb-'+st+'" data-a="postedit" data-id="'+p.id+'">'+t+'</button>';
+}
+function resList(){return S.posts.filter(function(p){var x=resState(p);return x==='late'||x==='today'}).sort(function(a,b){return resDay(a).localeCompare(resDay(b))})}
+function resSoon(){var w=addDays(TODAY,7);return S.posts.filter(function(p){return resState(p)==='soon'&&resDay(p)<=w})}
 function resLine(p){if(!hasRes(p))return '';return '<span class="chip res">'+RES.map(function(r){return fmtN(p.res[r[0]]||0)+' '+r[1].replace('Lượt ','').replace(' hỏi về bài','').toLowerCase()}).join(' · ')+'</span>'}
 var PAL={dao:['#F7BBA4','#A0472B','Đào'],troi:['#A7C7E7','#2F5F8F','Xanh trời'],tim:['#B9B9FF','#4646B0','Tím nhạt'],bh:['#B3E2D7','#22705C','Bạc hà'],bo:['#FFEE99','#7A6200','Vàng bơ'],mo:['#FFD9A8','#8A5A14','Mơ'],hong:['#F5C2E0','#A33A78','Hồng'],san:['#FFB3B3','#B33A3A','San hô'],bien:['#CDE7FB','#2C6E9E','Xanh biển nhạt']};
 var PLATC0={Facebook:'troi',TikTok:'hong',Instagram:'tim',Zalo:'bien',YouTube:'san',Threads:'mo',Website:'bh'};
@@ -2010,6 +2045,7 @@ function colorBy(){return S.settings.ctColor==='proj'?'proj':'plat'}
 function postCs(p){return colorBy()==='proj'?pcs(projOf(p.proj)):platCs(p.plat)}
 function legendHtml(){
   var items=colorBy()==='proj'?S.projects.map(function(p){return '<span class="lg" style="'+pcs(p)+'">'+esc(p.name)+'</span>'}):PLAT.filter(function(n){return S.posts.some(function(p){return p.plat===n})||n==='Facebook'||n==='TikTok'}).map(function(n){return '<span class="lg" style="'+platCs(n)+'">'+esc(n)+'</span>'});
+  items.push('<span class="lg lg-rk">Ngày điền số liệu</span>');
   return '<div class="cleg"><span class="small muted">Tô màu theo</span><div class="wf" style="margin:0"><button data-a="ctcolor" data-c="plat" aria-pressed="'+(colorBy()==='plat')+'">Nền tảng</button><button data-a="ctcolor" data-c="proj" aria-pressed="'+(colorBy()==='proj')+'">Dự án, kênh</button></div><div class="lgs">'+items.join('')+'</div><button class="btn sm" data-a="'+(colorBy()==='proj'?'projedit':'platcol')+'"'+(colorBy()==='proj'&&V.ct.proj!=='all'?' data-id="'+V.ct.proj+'"':'')+'>Đổi màu</button></div>';
 }
 function platColForm(){
@@ -2041,7 +2077,7 @@ function isLate(p){return p.status<5&&p.date&&(p.date<TODAY||(p.date===TODAY&&p.
 function pmeta(p,noProj){
   return (noProj?'':pchip(projOf(p.proj)))+plchip(p.plat)+(p.fmt?'<span class="chip">'+esc(p.fmt)+'</span>':'')+(p.vtype?'<span class="chip vt">'+esc(p.vtype)+'</span>':'')+(p.fear?'<span class="chip fe">'+esc(p.fear)+'</span>':'')+
     (p.date?'<span>'+dLabel(p.date)+(p.time?' · '+hLabel2(p.time):'')+'</span>':'<span>Chưa có ngày</span>')+(p.owner?'<span>'+esc(p.owner)+'</span>':'')+
-    (isLate(p)?'<span class="chip hot">Trễ hạn</span>':'')+(resDue(p)?'<button class="chip hot" data-a="postedit" data-id="'+p.id+'">Cần điền kết quả</button>':'')+resLine(p)+remChip(p);
+    (isLate(p)?'<span class="chip hot">Trễ hạn</span>':'')+(p.status===5&&!hasRes(p)?resBadge(p):'')+resLine(p)+remChip(p);
 }
 function hLabel2(t){var a=t.split(':');return (+a[0])+'h'+(a[1]==='00'?'':a[1])}
 
@@ -2069,8 +2105,9 @@ function ctDash(){
     '<div class="cst"><b>'+soon+'</b><span>Sắp đăng trong 7 ngày</span></div>'+
     '<div class="cst'+(late?' bad':'')+'"><b>'+late+'</b><span>Bài trễ hạn</span></div>'+
     '<div class="cst"><b>'+posted+'</b><span>Đã đăng tháng này</span></div></div>';
-  var due=all.filter(resDue);
-  if(due.length)h+='<div class="hint"><span><b>'+due.length+' bài đã đăng hơn 3 ngày chưa điền kết quả.</b> Chị mở TikTok hoặc Facebook xem số liệu rồi ghi vào bài.</span><button class="btn sm primary" data-a="ctres">Xem các bài này</button></div>';
+  var rl=all.filter(function(p){return resState(p)==='late'}).length,rt=all.filter(function(p){return resState(p)==='today'}).length,rs=all.filter(function(p){return resState(p)==='soon'&&resDay(p)<=addDays(TODAY,7)}).length;
+  if(all.some(function(p){return p.status===5}))h+='<div class="rstrip"><b>Lịch điền số liệu video</b><span class="small muted">Mỗi video đăng xong 3 ngày thì điền lượt xem, lưu, chia sẻ, tin nhắn. App nhắc lúc 9h ngày đó.</span><div class="rbox">'+
+    '<button class="rbx '+(rl?'rb-late':'')+'" data-a="godone"><b>'+rl+'</b>Quá hạn</button><button class="rbx '+(rt?'rb-today':'')+'" data-a="godone"><b>'+rt+'</b>Hôm nay</button><button class="rbx" data-a="godone"><b>'+rs+'</b>7 ngày tới</button></div></div>';
   h+=resTable(all);
   var pls=PLAT.filter(function(n){return all.some(function(p){return p.plat===n&&p.date&&p.date>=m0&&p.date<=m1})});
   if(pls.length)h+='<h3 style="margin-top:16px">Theo nền tảng tháng '+(+TODAY.slice(5,7))+'</h3><div class="plrow">'+pls.map(function(n){var ps=all.filter(function(p){return p.plat===n&&p.date&&p.date>=m0&&p.date<=m1});return '<button class="plbox" style="'+platCs(n)+'" data-a="ctplat" data-p="'+esc(n)+'"><b>'+esc(n)+'</b><span>'+ps.filter(function(p){return p.status===5}).length+'/'+ps.length+' bài đã đăng</span></button>'}).join('')+'</div>';
@@ -2100,8 +2137,7 @@ function ctControls(){
 function resHint(p){
   if(p.status!==5)return '';
   if(hasRes(p))return resLine(p);
-  if(resDue(p))return '<button class="chip hot" data-a="postedit" data-id="'+p.id+'">Cần điền kết quả</button>';
-  return p.date?'<span class="chip">Điền kết quả từ '+dLabel(addDays(p.date,3))+'</span>':'';
+  return resBadge(p);
 }
 function pcardS(p){
   return '<div class="card pc mini" style="'+postCs(p)+'"><button class="ttl" data-a="postedit" data-id="'+p.id+'">'+esc(p.idea)+'</button>'+
@@ -2110,7 +2146,7 @@ function pcardS(p){
 }
 function pcard(p){
   if(!V.ct.full)return pcardS(p);
-  return '<div class="card pc" style="'+postCs(p)+'"><button class="ttl" data-a="postedit" data-id="'+p.id+'">'+esc(p.idea)+'</button><div class="meta">'+pmeta(p)+(p.status===5&&!hasRes(p)&&!resDue(p)&&p.date?'<span class="chip">Điền kết quả từ '+dLabel(addDays(p.date,3))+'</span>':'')+'</div>'+
+  return '<div class="card pc" style="'+postCs(p)+'"><button class="ttl" data-a="postedit" data-id="'+p.id+'">'+esc(p.idea)+'</button><div class="meta">'+pmeta(p)+'</div>'+
     '<div class="acts"><span>'+(p.status>0?'<button class="btn sm" data-a="postmove" data-id="'+p.id+'" data-dir="-1" aria-label="Lùi một bước">‹</button>':'')+(p.status<5?' <button class="btn sm" data-a="postmove" data-id="'+p.id+'" data-dir="1">'+STAT[p.status+1]+' ›</button>':'')+'</span></div></div>';
 }
 function ctBoard(){
@@ -2129,15 +2165,17 @@ function ctBoard(){
   return h+'</div>';
 }
 function ctDone(){
-  var ps=postsF(true).filter(function(p){return p.status===5}).sort(function(a,b){return pKey(b).localeCompare(pKey(a))});
+  var ord={late:0,today:1,soon:2,done:3};
+  var ps=postsF(true).filter(function(p){return p.status===5}).sort(function(a,b){var oa=ord[resState(a)]==null?4:ord[resState(a)],ob=ord[resState(b)]==null?4:ord[resState(b)];if(oa!==ob)return oa-ob;return oa<3?String(resDay(a)).localeCompare(String(resDay(b))):pKey(b).localeCompare(pKey(a))});
   var due=ps.filter(resDue).length,filled=ps.filter(hasRes).length;
   var h='<div class="panel"><div class="head"><h3 style="margin:0">Bài đã đăng <span class="muted small">'+ps.length+' bài</span></h3><span class="small muted">'+filled+' bài có kết quả'+(due?' · <b style="color:var(--warn)">'+due+' bài cần điền</b>':'')+'</span></div>'+
-    '<p class="small muted" style="margin:6px 0 10px">Gõ số thẳng vào ô, app tự lưu. Hàng tô cam là bài đã qua 3 ngày, cần điền kết quả.</p>';
+    '<p class="small muted" style="margin:6px 0 10px">Bài quá hạn nằm trên cùng, rồi tới bài hôm nay, bài sắp tới, cuối cùng là bài đã điền. Gõ số thẳng vào ô, app tự lưu.</p>';
   if(!ps.length)return h+'<p class="empty">Chưa có bài nào ở bước Đã đăng.</p></div>';
-  h+='<div class="scroll-x"><table class="rtab dtab"><thead><tr><th>Ngày đăng</th><th>Bài</th><th>Nơi đăng</th>'+RES.map(function(r){return '<th>'+r[1].replace(' hỏi về bài','')+'</th>'}).join('')+'</tr></thead><tbody>';
+  h+='<div class="scroll-x"><table class="rtab dtab"><thead><tr><th>Hạn điền số liệu</th><th>Ngày đăng</th><th>Bài</th><th>Nơi đăng</th>'+RES.map(function(r){return '<th>'+r[1].replace(' hỏi về bài','')+'</th>'}).join('')+'</tr></thead><tbody>';
   ps.forEach(function(p){
     var wait=p.date&&addDays(p.date,3)>TODAY&&!hasRes(p),r=p.res||{};
-    h+='<tr class="'+(resDue(p)?'due':'')+'"><td>'+(p.date?dLabel(p.date):'Chưa có')+(wait?'<div class="small muted">Điền từ '+dLabel(addDays(p.date,3)).split(', ')[1]+'</div>':'')+'</td>'+
+    var rsx=resState(p);
+    h+='<tr class="r-'+(rsx||'none')+'"><td>'+(resBadge(p)||'<span class="small muted">Chưa có ngày đăng</span>')+'</td><td>'+(p.date?dLabel(p.date):'Chưa có')+'</td>'+
       '<td><button class="ttl" data-a="postedit" data-id="'+p.id+'">'+esc(p.idea)+'</button><div class="meta">'+(p.vtype?'<span class="chip vt">'+esc(p.vtype)+'</span>':'')+(p.fear?'<span class="chip fe">'+esc(p.fear)+'</span>':'')+'</div></td>'+
       '<td><div class="meta" style="margin:0">'+pchip(projOf(p.proj))+plchip(p.plat)+'</div></td>'+
       RES.map(function(x){return '<td><input type="number" min="0" inputmode="numeric" class="rin" data-res="'+x[0]+'" data-id="'+p.id+'" value="'+(r[x[0]]!=null&&hasRes(p)?r[x[0]]:'')+'" aria-label="'+x[1]+' của '+esc(p.idea)+'"></td>'}).join('')+'</tr>';
@@ -2157,6 +2195,8 @@ function ctCal(){
   var c=V.ct,ref=c.ref,ps=postsF(),by={};
   ps.forEach(function(p){if(p.date)(by[p.date]=by[p.date]||[]).push(p)});
   Object.keys(by).forEach(function(k){by[k].sort(function(a,b){return pKey(a).localeCompare(pKey(b))})});
+  var byR={};ps.forEach(function(p){var x=resState(p);if(x&&x!=='done')(byR[resDay(p)]=byR[resDay(p)]||[]).push(p)});
+  var rpill=function(p,cls){return '<button class="'+cls+' rk rk-'+resState(p)+'" data-a="postedit" data-id="'+p.id+'" title="Điền số liệu: '+esc(p.idea)+'">Số liệu: '+esc(p.idea)+'</button>'};
   var d0=pYmd(ref),label;
   if(c.cal==='month')label='Tháng '+(d0.getMonth()+1)+'/'+d0.getFullYear();
   else if(c.cal==='week'){var w=mondayOf(ref);label=dLabel(w).split(', ')[1]+' – '+dLabel(addDays(w,6)).split(', ')[1]}
@@ -2170,7 +2210,7 @@ function ctCal(){
     for(var i=0;i<42;i++){
       var d=addDays(start,i);if(i===35&&d.slice(0,7)!==mon)break;
       var its=by[d]||[];
-      h+='<div class="mc'+(d.slice(0,7)!==mon?' out':'')+(d===TODAY?' today':'')+'" data-a="calday" data-d="'+d+'"><span class="mn">'+(+d.slice(8))+'</span>'+its.slice(0,3).map(pill).join('')+(its.length>3?'<span class="more">+'+(its.length-3)+' bài</span>':'')+'</div>';
+      h+='<div class="mc'+(d.slice(0,7)!==mon?' out':'')+(d===TODAY?' today':'')+'" data-a="calday" data-d="'+d+'"><span class="mn">'+(+d.slice(8))+'</span>'+(byR[d]||[]).slice(0,2).map(function(p){return rpill(p,'mp')}).join('')+((byR[d]||[]).length>2?'<span class="more">+'+((byR[d]||[]).length-2)+' số liệu</span>':'')+its.slice(0,3).map(pill).join('')+(its.length>3?'<span class="more">+'+(its.length-3)+' bài</span>':'')+'</div>';
     }
     h+='</div><p class="small muted" style="margin-top:8px">Bấm vào một ngày để xem chi tiết và thêm bài cho ngày đó.</p>';
   }else if(c.cal==='week'){
@@ -2179,7 +2219,7 @@ function ctCal(){
     for(var j=0;j<7;j++){
       var dw=addDays(wk,j),iw=by[dw]||[];tot+=iw.length;
       h+='<div class="wc'+(dw===TODAY?' today':'')+'"><div class="wh"><b>'+WDs[pYmd(dw).getDay()]+' '+dw.slice(8)+'/'+dw.slice(5,7)+'</b><button class="btn sm ghost" data-a="postnew" data-date="'+dw+'" aria-label="Thêm bài ngày '+dLabel(dw)+'">+</button></div>'+
-        (iw.length?iw.map(function(p){return '<button class="wp'+(p.status===5?' done':'')+'" style="'+postCs(p)+'" data-a="postedit" data-id="'+p.id+'"><span class="wt">'+(p.time?hLabel2(p.time)+' · ':'')+esc(colorBy()==='proj'?p.plat:projOf(p.proj).name)+'</span>'+esc(p.idea)+'<span class="wt">'+STAT[p.status]+'</span></button>'}).join(''):'<span class="small muted">Trống</span>')+'</div>';
+        (byR[dw]||[]).map(function(p){return rpill(p,'wp')}).join('')+(iw.length?iw.map(function(p){return '<button class="wp'+(p.status===5?' done':'')+'" style="'+postCs(p)+'" data-a="postedit" data-id="'+p.id+'"><span class="wt">'+(p.time?hLabel2(p.time)+' · ':'')+esc(colorBy()==='proj'?p.plat:projOf(p.proj).name)+'</span>'+esc(p.idea)+'<span class="wt">'+STAT[p.status]+'</span></button>'}).join(''):'<span class="small muted">Trống</span>')+'</div>';
     }
     h+='</div><p class="small muted" style="margin-top:8px">Tuần này có '+tot+' bài. Bấm vào bài để sửa, bấm dấu + để thêm bài cho ngày đó.</p>';
   }else{
@@ -2188,7 +2228,8 @@ function ctCal(){
     days.forEach(function(d){
       var its=by[d]||[];
       h+='<div class="panel day'+(d===TODAY?' today':'')+'"><div class="head"><b>'+dLabel(d)+'</b><button class="btn sm" data-a="postnew" data-date="'+d+'">+ Bài</button></div>';
-      if(!its.length)h+='<p class="small muted">Chưa có bài</p>';
+      (byR[d]||[]).forEach(function(p){h+='<div class="row"><div class="body">'+rpill(p,'wp')+'</div></div>'});
+      if(!its.length&&!(byR[d]||[]).length)h+='<p class="small muted">Chưa có bài</p>';
       its.forEach(function(p){h+='<div class="row"><span class="pdot" style="'+postCs(p)+'"></span><div class="body"><button class="ttl" data-a="postedit" data-id="'+p.id+'">'+esc(p.idea)+'</button><div class="meta"><span class="chip st'+p.status+'">'+STAT[p.status]+'</span>'+pmeta(p)+'</div></div></div>'});
       h+='</div>';
     });
@@ -2248,7 +2289,8 @@ function projForm(id){
 }
 function ctClick(a,b,id){
   var p;
-  if(a==='tagform'){tagForm();return true}
+  if(a==='godone'){closeModal();V.ct.view='done';V.ct.res=false;V.ct.stat='';go('content');return true}
+  else if(a==='tagform'){tagForm();return true}
   else if(a==='tagadd'){var k=b.dataset.k,inp=$('#tg_'+k),v=(inp.value||'').trim();if(!v){toast('Chị gõ tên nhãn trước nhé.');return true}S.settings.tags=S.settings.tags||{};S.settings.tags[k]=uniq(tagsOf(k).concat([v]));persist();render();tagForm();toast('Đã thêm "'+v+'".');return true}
   else if(a==='tagdel'){var k2=b.dataset.k,v2=b.dataset.v;S.settings.tags[k2]=tagsOf(k2).filter(function(x){return x!==v2});persist();render();tagForm();toast('Đã bỏ "'+v2+'" khỏi danh sách. Bài cũ vẫn giữ nhãn này.');return true}
   else if(a==='ctfull'){V.ct.full=!V.ct.full}
@@ -2283,7 +2325,7 @@ function ctClick(a,b,id){
     v.vtype=$('#qVt').value.trim();v.fear=$('#qFear').value.trim();
     if($('#qR_view')){var rr={},any=false;RES.forEach(function(x){var n=$('#qR_'+x[0]).value;if(n!==''){any=true;rr[x[0]]=Math.max(0,parseInt(n,10)||0)}});
       if(any){var old=(S.posts.filter(function(x){return x.id===id})[0]||{}).res;rr.at=(old&&old.at)||Date.now();RES.forEach(function(x){if(rr[x[0]]==null)rr[x[0]]=0});v.res=rr}}
-    if(id){p=S.posts.filter(function(x){return x.id===id})[0];if(p){if(p.date!==v.date||p.time!==v.time){p.remind=null;p.noRem=false}Object.assign(p,v);delete p.ex}}
+    if(id){p=S.posts.filter(function(x){return x.id===id})[0];if(p){if(p.date!==v.date||p.time!==v.time||p.status!==v.status){p.remind=null;p.noRem=false}Object.assign(p,v);delete p.ex}}
     else S.posts.push(Object.assign({id:uid()},v));
     closeModal();persist();toast('Đã lưu bài.');
   }
@@ -2292,7 +2334,7 @@ function ctClick(a,b,id){
     try{navigator.clipboard.writeText(cap).then(function(){toast('Đã sao chép caption.')},function(){toast('Máy chưa cho sao chép. Chị bôi đen caption rồi sao chép tay nhé.')})}catch(x){toast('Máy chưa cho sao chép. Chị bôi đen caption rồi sao chép tay nhé.')}
     return true;
   }
-  else if(a==='postmove'){p=S.posts.filter(function(x){return x.id===id})[0];if(p){p.status=Math.max(0,Math.min(5,p.status+parseInt(b.dataset.dir,10)));persist();toast('Đã chuyển sang "'+STAT[p.status]+'".')}}
+  else if(a==='postmove'){p=S.posts.filter(function(x){return x.id===id})[0];if(p){var ost=p.status;p.status=Math.max(0,Math.min(5,p.status+parseInt(b.dataset.dir,10)));if(p.status!==ost){p.remind=null;p.noRem=false}persist();toast('Đã chuyển sang "'+STAT[p.status]+'".')}}
   else if(a==='postdel'){S.posts=S.posts.filter(function(x){return x.id!==id});closeModal();persist();toast('Đã xóa bài.')}
   else if(a==='projnew'){projForm(null);return true}
   else if(a==='projedit'){projForm(id);return true}
@@ -2316,7 +2358,7 @@ document.addEventListener('change',function(e){
   var rk=e.target.dataset&&e.target.dataset.res;
   if(rk){var rp=S.posts.filter(function(x){return x.id===e.target.dataset.id})[0];if(!rp)return;
     var r=rp.res||{};r[rk]=e.target.value===''?0:Math.max(0,parseInt(e.target.value,10)||0);RES.forEach(function(x){if(r[x[0]]==null)r[x[0]]=0});
-    if(!r.at)r.at=Date.now();rp.res=r;persist();var tr=e.target.closest('tr');if(tr)tr.classList.remove('due');setStatus('saving');return}
+    if(!r.at)r.at=Date.now();rp.res=r;persist();var tr=e.target.closest('tr');if(tr){tr.className='r-done';var bd=tr.querySelector('.rb');if(bd){bd.className='rb rb-done';bd.textContent='Đã điền số liệu'}}setStatus('saving');return}
   var k=e.target.dataset&&e.target.dataset.ct;if(!k)return;
   if(k==='fVt')V.ct.vt=e.target.value;else if(k==='fFear')V.ct.fear=e.target.value;else if(k==='fPlat')V.ct.plat=e.target.value;else if(k==='fStat')V.ct.stat=e.target.value;else if(k==='fOwn')V.ct.own=e.target.value;
   render();
